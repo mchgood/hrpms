@@ -1,0 +1,84 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<base href="<%=basePath%>">
+
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<%@include file="/script.html" %>
+</head>
+<body>
+	<div id="toolbar">
+		<span>用户名称：</span>
+		<input type="text" class="easyui-textbox" id="username" name="username">			
+		<span>手机号码：</span>
+		<input type="text" class="easyui-textbox" id="phone" name="phone">
+		<span>状态：</span>
+		<select  type="text" class="easyui-combobox" id="status" name="status" style="width:200px;">
+			<option value="1">正常</option>
+    		<option value="0">删除</option>
+		</select>
+		<a href="javascript:void(0)" class="easyui-linkbutton"  id="search" >查询</a>
+	</div>
+	<table id="datagrid"></table>
+</body>
+<script type="text/javascript">
+$("#datagrid").datagrid({
+			url:"company/system/userInfo",
+			method:"post",
+			toolbar:"#toolbar",
+			fitColumns:true, //自动调整列宽
+			idField:"userId", // 指示服务器传递的数据中，哪个字段是主键
+			rownumbers:true, // 显示行号
+			pagination:true, // 使用分页
+			columns:[[
+				{field:"username",title:"用户名称",width:80},
+				{field:"email",title:"电子邮件",width:80},
+				{field:"phone",title:"手机号码",width:80},
+				{field:"status",title:"状态",formatter:function(value,rowValue,index){
+					if(value==1){
+						return "可用";
+					}else {
+						return "禁用";
+					}
+				},width:80},
+				{field:'option',title:'操作',formatter:function(value,rowData,rowIndex){
+                    var e = '<a href="javascript:void(0)" onclick="PorEdit(' + rowData.id + ')"><img src="static/easyui/themes/icons/pencil.png" border="0"></a> ';
+                    var d = '<a href="javascript:void(0)" onclick="Delete(' + rowData.id + ')"><img src="static/easyui/themes/icons/cancel.png"></a>';
+                    return e + d;
+                    },width:120}
+			]],
+			loadFilter:function(data){
+				if(data && data.success){
+					return {"total":data.result.total,"rows":data.result.rows};
+				}
+			}
+		})	
+		
+$("#search").on("click", function search(){
+    var username = $("#username").val();
+    var status = $("#status").val();
+    var phone = $("#phone").val();
+    $("#datagrid").datagrid("load",{            
+        "username":username,
+        "status":status,
+        "phone":phone
+    })
+})
+ 
+
+function PorEdit(id){
+	alert("修改"+id);
+}
+
+function Delete(id){
+	alert("删除"+id);
+}
+	</script>
+</html>

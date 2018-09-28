@@ -1,0 +1,17 @@
+package com.zhidisoft.system.dao;
+
+import com.zhidisoft.base.IBaseDao;
+import com.zhidisoft.system.entity.Function;
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+public interface FunctionDao extends IBaseDao<Integer, Function>{
+
+	List<Function> findFunListByRoleId(Integer roleId);
+	List<Function> findFunListByParentId(Integer parentId);
+	
+	List<Function> findMenuList(@Param("userId")Integer userId,@Param("funcId")Integer id);
+	
+	List<Function> findAllMenuList(@Param("id")Integer id);
+}

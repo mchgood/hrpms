@@ -1,0 +1,29 @@
+package com.zhidisoft.accumulation_fund.service.impl;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.zhidisoft.accumulation_fund.dao.CustomerDao;
+import com.zhidisoft.accumulation_fund.entity.Customer;
+import com.zhidisoft.accumulation_fund.service.CustomerServiceIf;
+import com.zhidisoft.base.BaseServiceImpl;
+
+@Service
+public class CustomerServiceImpl extends BaseServiceImpl<Integer, Customer> implements CustomerServiceIf {
+
+	@Resource
+	CustomerDao customerDao;
+	
+	@Override
+	public Customer findByIdCard(String idcard) {
+		return customerDao.selectByIdCard(idcard);
+	}
+
+	@Override
+	public int updateCustomerUser(String name, String idCard) {
+		
+		return customerDao.updateCustomerUser(name, idCard);
+	}
+
+}

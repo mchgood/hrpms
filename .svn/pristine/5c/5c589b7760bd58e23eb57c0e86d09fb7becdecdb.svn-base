@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhidisoft.marketingmanagement.dao.SmsDao">
+  <resultMap id="BaseResultMap" type="com.zhidisoft.marketingmanagement.entity.Sms">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="telephone" jdbcType="VARCHAR" property="telephone" />
+    <result column="sendTime" jdbcType="TIMESTAMP" property="sendtime" />
+    <result column="content" jdbcType="LONGVARCHAR" property="content" />
+     <result column="name" jdbcType="VARCHAR" property="sendName" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from tb_sms_record
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.zhidisoft.marketingmanagement.entity.Sms">
+    insert into tb_sms_record (id, user_id, telephone, 
+      sendTime, content)
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{telephone,jdbcType=VARCHAR}, 
+      #{sendtime,jdbcType=TIMESTAMP}, #{content,jdbcType=LONGVARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.zhidisoft.marketingmanagement.entity.Sms">
+    update tb_sms_record
+    set user_id = #{userId,jdbcType=INTEGER},
+      telephone = #{telephone,jdbcType=VARCHAR},
+      sendTime = #{sendtime,jdbcType=TIMESTAMP},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, user_id, telephone, sendTime, content
+    from tb_sms_record
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, user_id, telephone, sendTime, content
+    from tb_sms_record
+  </select>
+  
+  <sql id="pageComm">
+		<where>
+			<if test="condition != null">
+			     <if test="condition.sendName!=null and condition.sendName!=''">
+	                name like concat("%",#{condition.sendName},"%")
+	            </if>
+	            <if test="condition.telephone!=null">
+	                and telephone like concat("%",#{condition.telephone},"%")
+	            </if>
+	            
+			</if>
+		</where>
+	</sql>
+  <select id="findByPage" parameterType="Map" resultMap="BaseResultMap">
+  	SELECT tb_sms_record .*,tb_customer.`name` FROM  tb_sms_record  LEFT JOIN tb_customer ON tb_sms_record .`user_id`=tb_customer.`id`
+  	
+   <include refid="pageComm"/>
+    LIMIT #{offset},#{pageSize}
+    
+  </select>	
+  <select id="count" parameterType="Map" resultType="java.lang.Integer">
+  	select count(id)
+    from tb_sms_record 
+    <include refid="pageComm"/>
+  </select>
+</mapper>

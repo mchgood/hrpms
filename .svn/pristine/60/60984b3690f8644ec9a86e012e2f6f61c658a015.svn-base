@@ -1,0 +1,12 @@
+package com.zhidisoft.system.service;
+
+import com.zhidisoft.base.IBaseService;
+import com.zhidisoft.system.entity.User;
+
+public interface UserServiceIf extends IBaseService<Integer, User>{
+	boolean findByName(User user);
+
+    int updateByusername(User user);
+    
+    int deleteUserById(Integer id);
+}

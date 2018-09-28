@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhidisoft.accumulationfund.dao.AccumulationFundDao">
+  <resultMap id="BaseResultMap" type="com.zhidisoft.accumulationfund.entity.AccumulationFund">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="idCard" jdbcType="VARCHAR" property="idcard" />
+    <result column="accountNo" jdbcType="VARCHAR" property="accountno" />
+    <result column="payDate" jdbcType="VARCHAR" property="paydate" />
+    <result column="payMoney" jdbcType="DOUBLE" property="paymoney" />
+    <result column="proxyFee" jdbcType="DOUBLE" property="proxyfee" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="createBy" jdbcType="INTEGER" property="createby" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="updateBy" jdbcType="INTEGER" property="updateby" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    <!-- delete from tb_accumulation_fund
+    where id = #{id,jdbcType=INTEGER} -->
+     update tb_accumulation_fund
+     set  status = 1 where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.zhidisoft.accumulationfund.entity.AccumulationFund">
+    <!-- #{id,jdbcType=INTEGER},id, -->
+    insert into tb_accumulation_fund ( idCard, accountNo, 
+      payDate, payMoney, proxyFee, 
+      createBy, createTime, 
+      updateBy, updateTime, remark
+      )
+    values ( #{idcard,jdbcType=VARCHAR}, #{accountno,jdbcType=VARCHAR}, 
+      #{paydate,jdbcType=VARCHAR}, #{paymoney,jdbcType=DOUBLE}, #{proxyfee,jdbcType=DOUBLE}, 
+      #{createby,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, 
+      #{updateby,jdbcType=INTEGER}, #{updatetime,jdbcType=TIMESTAMP}, #{remark,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.zhidisoft.accumulationfund.entity.AccumulationFund">
+    update tb_accumulation_fund
+    set idCard = #{idcard,jdbcType=VARCHAR},
+      accountNo = #{accountno,jdbcType=VARCHAR},
+      payDate = #{paydate,jdbcType=VARCHAR},
+      payMoney = #{paymoney,jdbcType=DOUBLE},
+      proxyFee = #{proxyfee,jdbcType=DOUBLE},
+      status = #{status,jdbcType=VARCHAR},
+      createBy = #{createby,jdbcType=INTEGER},
+      createTime = #{createtime,jdbcType=TIMESTAMP},
+      updateBy = #{updateby,jdbcType=INTEGER},
+      updateTime = #{updatetime,jdbcType=TIMESTAMP},
+      remark = #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, idCard, accountNo, payDate, payMoney, proxyFee, status, createBy, createTime, 
+    updateBy, updateTime, remark
+    from tb_accumulation_fund
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, idCard, accountNo, payDate, payMoney, proxyFee, status, createBy, createTime, 
+    updateBy, updateTime, remark
+    from tb_accumulation_fund
+  </select>
+  
+   <sql id="pageComm">
+		<where>
+			<if test="condition!=null">
+			     <if test="condition.idcard!=null and condition.idcard!=''">
+	                fund.idCard like concat("%",#{condition.idcard},"%")
+	            </if>
+	      
+	            <if test="condition.accountno!=null and condition.accountno!=''">
+	                and fund.accountNo like concat("%",#{condition.accountno},"%")
+	            </if>	             
+			</if>
+			and fund.idCard=customer.idCard and fund.status=0 
+		</where>
+	</sql>
+	
+	
+  <!--查询总记录数  -->
+  <select id="count" resultType="java.lang.Integer" parameterType="Map">
+    select count(fund.id) from tb_accumulation_fund as fund,tb_customer as customer   
+    <include refid="pageComm"/>
+  </select>
+  
+  
+  <select id="findByPage" resultMap="BaseResultMap" >
+    select  fund.id, fund.idCard, fund.accountNo, fund.payDate, fund.payMoney, fund.proxyFee, fund.status, fund.createBy, fund.createTime, 
+    fund.updateBy, fund.updateTime, fund.remark,customer.name
+    from tb_accumulation_fund as fund ,tb_customer as customer    
+     <include refid="pageComm"/>
+    limit #{offset},#{pageSize}
+	  
+  </select>
+
+
+  <select id="findById" resultMap="BaseResultMap" >
+    select  fund.id, fund.idCard, fund.accountNo, fund.payDate, fund.payMoney, fund.proxyFee, fund.status, fund.createBy, fund.createTime, 
+    fund.updateBy, fund.updateTime, fund.remark
+    from tb_accumulation_fund as fund   where  fund.id=#{id} 
+  </select>
+  
+<!-- 根据idcard查询 -->
+   <select id="findByIdCard" resultMap="BaseResultMap" >
+    select  fund.id, fund.idCard, fund.accountNo, fund.payDate, fund.payMoney, fund.proxyFee, fund.status, fund.createBy, fund.createTime, 
+    fund.updateBy, fund.updateTime, fund.remark
+    from tb_accumulation_fund as fund where fund.idCard=#{idcard}    
+  </select>
+  
+  <!--修改缴费的信息  -->
+  <update id="updateByIdCard" parameterType="com.zhidisoft.accumulationfund.entity.AccumulationFund">
+    update tb_accumulation_fund
+    set payDate = #{paydate,jdbcType=VARCHAR},
+        payMoney = #{paymoney,jdbcType=DOUBLE},
+        proxyFee = #{proxyfee,jdbcType=DOUBLE}
+    where idCard = #{idcard}
+  </update>
+  
+  <!-- 修改用户信息 -->
+  <update id="updateFundUser" parameterType="com.zhidisoft.accumulationfund.entity.AccumulationFund">
+    update tb_accumulation_fund
+    set payDate = #{paydate,jdbcType=VARCHAR},
+        payMoney = #{paymoney,jdbcType=DOUBLE},
+        idCard = #{idcard,jdbcType=VARCHAR},
+        accountNo = #{accountno,jdbcType=VARCHAR},
+        status = #{status,jdbcType=VARCHAR}
+    where idCard = #{idcard}
+  </update>
+  
+</mapper>

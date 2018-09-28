@@ -1,0 +1,46 @@
+package com.zhidisoft.system.controller;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.zhidisoft.base.BaseController;
+import com.zhidisoft.result.JsonResult;
+import com.zhidisoft.result.PageBean;
+import com.zhidisoft.system.entity.User;
+import com.zhidisoft.system.service.UserServiceIf;
+
+/**
+* 系统管理控制器
+* @author tkc  
+* @date 2018年9月15日  
+*/ 
+@Controller
+public class SystemManageController extends BaseController{
+	
+	@Resource
+	UserServiceIf userService;
+	
+	@RequestMapping("/company/system/userInfo")
+	@ResponseBody
+	public JsonResult userInfo(Integer page,Integer rows,String username,Integer status,String phone) {
+		//创建user的分页对象
+		PageBean<User> userPageBean = new PageBean<User>();
+		userPageBean.setPage(page);
+		userPageBean.setRows(rows);
+	
+		Map<String, Object> condition = new HashMap<String, Object>();
+		condition.put("username", username);
+		condition.put("phone", phone);
+		condition.put("status", status);
+		userPageBean.setCondition(condition);
+		
+		PageBean<User> pageBean = userService.findByPage(userPageBean);
+		return JsonResult.buildSuccessResult(pageBean);
+	}
+}

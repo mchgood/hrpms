@@ -1,0 +1,16 @@
+package com.zhidisoft.system.service;
+
+import com.zhidisoft.base.IBaseService;
+import com.zhidisoft.result.PageBean;
+import com.zhidisoft.system.entity.Dict;
+import com.zhidisoft.system.entity.EmailTemplate;
+
+public interface DictServiceIf extends IBaseService<Integer, Dict>{
+
+    PageBean<Dict> findByPageFormate(PageBean<Dict> pageBean);
+
+    Dict findBySMSId(Integer id);
+
+    int addOrUpdateSMS(Dict dict);
+
+}

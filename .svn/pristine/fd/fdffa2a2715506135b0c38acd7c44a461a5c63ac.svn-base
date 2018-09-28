@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhidisoft.system.dao.RoleDao">
+  <resultMap id="BaseResultMap" type="com.zhidisoft.system.entity.Role">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="roleName" jdbcType="VARCHAR" property="rolename" />
+    <result column="sortnum" jdbcType="INTEGER" property="sortnum" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="createBy" jdbcType="INTEGER" property="createby" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="updateBy" jdbcType="INTEGER" property="updateby" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="roleNote" jdbcType="VARCHAR" property="rolenote" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from tb_system_role
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.zhidisoft.system.entity.Role">
+    insert into tb_system_role (id, roleName, sortnum, 
+      status, createBy, createTime, 
+      updateBy, updateTime, roleNote
+      )
+    values (#{id,jdbcType=INTEGER}, #{rolename,jdbcType=VARCHAR}, #{sortnum,jdbcType=INTEGER}, 
+      #{status,jdbcType=VARCHAR}, #{createby,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, 
+      #{updateby,jdbcType=INTEGER}, #{updatetime,jdbcType=TIMESTAMP}, #{rolenote,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.zhidisoft.system.entity.Role">
+    update tb_system_role
+    set roleName = #{rolename,jdbcType=VARCHAR},
+      sortnum = #{sortnum,jdbcType=INTEGER},
+      status = #{status,jdbcType=VARCHAR},
+      createBy = #{createby,jdbcType=INTEGER},
+      createTime = #{createtime,jdbcType=TIMESTAMP},
+      updateBy = #{updateby,jdbcType=INTEGER},
+      updateTime = #{updatetime,jdbcType=TIMESTAMP},
+      roleNote = #{rolenote,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, roleName, sortnum, status, createBy, createTime, updateBy, updateTime, 
+    roleNote
+    from tb_system_role
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, roleName, sortnum, status, createBy, createTime, updateBy, updateTime, 
+    roleNote
+    from tb_system_role
+  </select>
+  
+  <select id="findRoleList" resultMap="BaseResultMap">
+      select r.id, r.roleName, r.sortnum, r.status, r.createBy, r.createTime, 
+      r.updateBy, r.updateTime,r.roleNote
+     from tb_system_user as u ,tb_system_role as r ,tb_user_role as ur
+	  where u.id=ur.userId and r.id=ur.roleId and u.id=#{userId}
+  </select>
+  
+</mapper>

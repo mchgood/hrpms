@@ -1,0 +1,11 @@
+package com.zhidisoft.system.dao;
+
+import com.zhidisoft.base.IBaseDao;
+import com.zhidisoft.system.entity.Function;
+import java.util.List;
+
+public interface FunctionDao extends IBaseDao<Integer, Function>{
+
+	List<Function> findFunListByRoleId(Integer roleId);
+
+}

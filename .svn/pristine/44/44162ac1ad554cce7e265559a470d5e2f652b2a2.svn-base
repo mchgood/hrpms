@@ -1,0 +1,23 @@
+package com.zhidisoft.system.service;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.zhidisoft.base.IBaseService;
+import com.zhidisoft.result.CheckBox;
+import com.zhidisoft.system.entity.Role;
+
+public interface RolrServiceIf extends IBaseService<Integer, Role>{
+	
+    List<CheckBox> findRoleList(Integer UserId);
+	
+	int deleteByUserId(Integer userId);
+	
+	int addUserRole(Integer userId,List<String> arr);
+	
+	int changRole(Role role,List<String> arr);
+	
+	int deleteRole(Integer id);
+}

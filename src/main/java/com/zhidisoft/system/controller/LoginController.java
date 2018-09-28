@@ -1,0 +1,134 @@
+package com.zhidisoft.system.controller;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.IncorrectCredentialsException;
+import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.subject.Subject;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.zhidisoft.base.BaseController;
+import com.zhidisoft.geetest.GeetestConfig;
+import com.zhidisoft.geetest.GeetestLib;
+import com.zhidisoft.result.JsonResult;
+import com.zhidisoft.result.PageBean;
+import com.zhidisoft.result.TreeNode;
+import com.zhidisoft.system.entity.User;
+import com.zhidisoft.system.service.FunctionServiceIf;
+import com.zhidisoft.system.service.UserServiceIf;
+
+/** 
+ * 用于处理登录和退出
+* @author tkc  
+* @date 2018年9月15日  
+*/ 
+@Controller
+public class LoginController extends BaseController{
+	@Resource
+	UserServiceIf userService;
+	@Resource
+	FunctionServiceIf functionServiceIf ;
+	
+	/**
+	 * 用于处理登录验证，验证通过跳转到index页面
+	 * @param username		账号
+	 * @param password		密码
+	 * 
+	 */
+	@RequestMapping("/login")
+	@ResponseBody
+	public JsonResult login(String username,String password,boolean rememberMe) {
+		//将传递过来的登录信息交给shiro进行验证
+		Subject currentUser = SecurityUtils.getSubject();
+		UsernamePasswordToken token = new UsernamePasswordToken(username, password);
+		try {
+		    if(rememberMe){
+                token.setRememberMe(true);                  
+            }else {
+                token.setRememberMe(false);
+            }
+			currentUser.login(token);
+		} catch (UnknownAccountException e) {
+		    return JsonResult.buildFailResult("用户名错误");		
+		} catch (IncorrectCredentialsException e) {
+		    return JsonResult.buildFailResult("密码错误");	
+		} catch (AuthenticationException e) {
+		    return JsonResult.buildFailResult("认证时的其他错误");    
+		} catch (Exception e) {
+		    return JsonResult.buildFailResult("认证时的其他错误"); 		
+		}
+		return JsonResult.buildSuccessResult();
+	}
+	
+	
+	/**
+	 * 
+	 * @param id   父级菜单的ID
+	 * @return
+	 */
+	@RequestMapping("/menu")
+    @ResponseBody
+	public JsonResult menu(Integer id,HttpServletRequest re) {
+	    //获取登录人信息
+	    User user = (User) SecurityUtils.getSubject().getPrincipal();
+	  
+	    List<TreeNode> menList = functionServiceIf.findMenuByUserId(user.getId(),id);
+	    
+	    return JsonResult.buildSuccessResult(menList);
+	}
+	
+
+    /** 退出登录
+     * @return
+     */
+    @RequestMapping("/logout")
+    public String logout() {
+        Subject subject = SecurityUtils.getSubject();
+        if (subject.isAuthenticated()) {
+            subject.logout();
+        }
+        return "tologin";
+    }
+    
+    @RequestMapping("/gt/register1")
+    public void geetest(HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+        GeetestLib gtSdk = new GeetestLib(GeetestConfig.getGeetest_id(), GeetestConfig.getGeetest_key(), 
+                GeetestConfig.isnewfailback());
+
+        String resStr = "{}";
+        
+        String userid = "test";
+        
+        //自定义参数,可选择添加
+        HashMap<String, String> param = new HashMap<String, String>();
+        //进行验证预处理
+        int gtServerStatus = gtSdk.preProcess(param);
+        
+        //将服务器状态设置到session中
+        request.getSession().setAttribute(gtSdk.gtServerStatusSessionKey, gtServerStatus);
+        //将userid设置到session中
+        request.getSession().setAttribute("userid", userid);
+        
+        resStr = gtSdk.getResponseStr();
+        PrintWriter out = response.getWriter();
+        out.println(resStr);
+    }
+}

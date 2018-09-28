@@ -1,0 +1,45 @@
+package com.zhidisoft.system.service.impl;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.zhidisoft.base.BaseServiceImpl;
+import com.zhidisoft.result.TreeNode;
+import com.zhidisoft.system.dao.FunctionDao;
+import com.zhidisoft.system.entity.Function;
+import com.zhidisoft.system.service.FunctionServiceIf;
+import com.zhidisoft.system.service.RolrServiceIf;
+@Service
+@SuppressWarnings("all")
+public class FunctionServiceImpl extends BaseServiceImpl<Integer, Function> implements FunctionServiceIf{
+	@Resource
+	FunctionDao functionDao;
+	
+	@Override
+	public List<TreeNode> findMenuByUserId(Integer userId,Integer id) {
+	    List<TreeNode> treeNodeList = new ArrayList();
+	    //首先查出所有父级菜单
+	    List<Function> funcList = functionDao.findMenuList(userId,id);
+	    for(Function func:funcList){          
+            TreeNode tn = new  TreeNode();
+            
+            tn.setId(func.getId());
+            tn.setText(func.getFuncname());
+            // 父菜单
+            if(func.getParentid()==null || func.getFuncurl()==null){
+                tn.setState("closed");
+            }
+            if(func.getFuncurl()!=null){
+                tn.getAttributes().put("url", func.getFuncurl());
+            }
+           
+            treeNodeList.add(tn);           
+        }
+	    return treeNodeList;
+	}
+
+}

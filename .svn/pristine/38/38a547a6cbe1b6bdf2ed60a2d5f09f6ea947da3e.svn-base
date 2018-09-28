@@ -1,0 +1,83 @@
+package com.zhidisoft.system.service.impl;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.zhidisoft.base.BaseServiceImpl;
+import com.zhidisoft.result.TreeNode;
+import com.zhidisoft.system.dao.FunctionDao;
+import com.zhidisoft.system.entity.Function;
+import com.zhidisoft.system.service.FunctionServiceIf;
+import com.zhidisoft.system.service.RolrServiceIf;
+@Service
+@SuppressWarnings("all")
+public class FunctionServiceImpl extends BaseServiceImpl<Integer, Function> implements FunctionServiceIf{
+	@Resource
+	FunctionDao functionDao;
+	
+	@Override
+	public List<TreeNode> findMenuByUserId(Integer userId,Integer id) {
+	    List<TreeNode> treeNodeList = new ArrayList();
+	    //首先查出所有父级菜单
+	    List<Function> funcList = functionDao.findMenuList(userId,id);
+	    for(Function func:funcList){          
+            TreeNode tn = new  TreeNode();
+            
+            tn.setId(func.getId());
+            tn.setText(func.getFuncname());
+            // 父菜单
+            if(func.getParentid()==null || func.getFuncurl()==null){
+                tn.setState("closed");
+            }
+            if(func.getFuncurl()!=null){
+                tn.getAttributes().put("url", func.getFuncurl());
+            }
+           
+            treeNodeList.add(tn);           
+        }
+	    return treeNodeList;
+	}
+
+    @Override
+    public List<TreeNode> findMenuByRoleId(Integer roleId, Integer id) {
+        List<TreeNode> treeNodeList = new ArrayList();
+        //获取所有的功能
+        List<Function> funcList = functionDao.selectAll();
+        List<Function> selectList = functionDao.findFunListByRoleId(roleId);
+        List<TreeNode> parent=new ArrayList();
+        //获得所有的父节点
+        for(Function func:funcList) {
+            if(func.getParentid() ==null && !(func.getFuncname().equals("个人信息"))) {
+                TreeNode tn = new  TreeNode();
+                tn.setId(func.getId());
+                tn.setText(func.getFuncname());
+                tn.setState("open");
+                parent.add(tn);
+            }
+        }
+        //循环父节点
+        for (TreeNode treeNode : parent) {
+            //循环查询到的所有节点，当子节点的parentid=父节点id，把节点添加到父节点中
+            for (Function fun : funcList) {
+                if(fun.getParentid()==treeNode.getId()) {
+                    TreeNode tn = new  TreeNode();
+                    tn.setId(fun.getId());
+                    tn.setText(fun.getFuncname());
+                    for (Function f : selectList) {
+                        if(f.getId()==fun.getId()) {
+                            tn.setChecked(true);
+                        }
+                    }
+                    List<TreeNode> children = treeNode.getChildren();
+                    children.add(tn);
+                }
+            }
+        }
+        return parent;
+    }
+
+}

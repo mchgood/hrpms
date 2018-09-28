@@ -1,0 +1,22 @@
+package com.zhidisoft.system.service.impl;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import com.zhidisoft.base.BaseServiceImpl;
+import com.zhidisoft.system.dao.FunctionDao;
+import com.zhidisoft.system.entity.Function;
+import com.zhidisoft.system.service.FunctionServiceIf;
+import com.zhidisoft.system.service.RolrServiceIf;
+
+public class FunctionServiceImpl extends BaseServiceImpl<Integer, Function> implements FunctionServiceIf{
+	@Resource
+	FunctionDao functionDao;
+	@Override
+	public List<Function> findFunListByRoleId(Integer roleId) {
+		functionDao.findFunListByRoleId(roleId);
+		return null;
+	}
+
+}

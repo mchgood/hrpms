@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<!-- 自定义realm -->
+	<bean id="realm" class="com.zhidisoft.realm.AhtuRealm">
+		<property name="credentialsMatcher" >
+			<bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+				<property name="hashAlgorithmName" value="md5"></property>
+				<property name="hashIterations" value="2"></property>
+				<property name="storedCredentialsHexEncoded" value="true"></property>
+			</bean>
+		</property>
+	</bean>
+	
+	<!-- 配置securityManager -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="cacheManager" ref="cacheManager"></property>
+		<property name="realms">
+			<ref bean="realm"/>
+		</property>
+	</bean>
+	
+	<!-- 将shirofilete配置到容器中 -->
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<!-- 登录时访问到url： /login -->
+		<property name="loginUrl" value="/login"></property>
+		<!-- 登录成功后，会跳转到到页面 -->
+		<property name="successUrl"  value="/index"></property>
+		<!-- 访问某个url时，如果没有权限，会跳转到 unauthorizedUrl -->
+		<property name="unauthorizedUrl"  value="/unauthorized"></property>
+		
+		<!-- 配置过滤器链  -->
+		<property name="filterChainDefinitions">
+			<ref bean="shiroFilterChainDefinitions" />
+		</property>
+		
+		<property name="securityManager" ref="securityManager"></property>
+	</bean>	
+	
+	<!-- 
+		/static/**			匿名可以访问
+		/login = anon		匿名可以访问
+		/logout = logout	退出，从session中清除数据
+		/** = authc			所有都需要认证
+	-->
+	<bean name="shiroFilterChainDefinitions" class="java.lang.String">
+		<constructor-arg>
+			<value>
+				/static/** = anon
+				/login = anon
+				/logout = logout
+				/** = authc
+			</value>			
+		</constructor-arg>
+	</bean>
+	
+	<bean id="cacheManager" class="com.zhidisoft.cache.RedisCacheManager"></bean>
+	
+	<!-- （固定）保证实现了Shiro内部lifecycle函数的bean执行 -->
+	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
+
+	<!--（固定） AOP式方法级权限检查 -->
+	<bean
+		class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
+		depends-on="lifecycleBeanPostProcessor">
+		<property name="proxyTargetClass" value="true" />
+	</bean>
+	<bean
+		class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+		<property name="securityManager" ref="securityManager" />
+	</bean>
+	
+	
+</beans>

@@ -1,0 +1,12 @@
+package com.zhidisoft.system.service;
+
+import com.zhidisoft.base.IBaseService;
+import com.zhidisoft.system.entity.EmailTemplate;
+
+public interface EmailServiceIf extends IBaseService<Integer, EmailTemplate>{
+
+    EmailTemplate findBySMSId(Integer id);
+
+    int addOrUpdateSMS(EmailTemplate email);
+
+}

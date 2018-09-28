@@ -1,0 +1,9 @@
+package com.zhidisoft.contentmanagement.dao;
+
+import com.zhidisoft.base.IBaseDao;
+import com.zhidisoft.contentmanagement.entity.News;
+import java.util.List;
+
+public interface NewsDao extends IBaseDao<Integer, News>{
+  
+}

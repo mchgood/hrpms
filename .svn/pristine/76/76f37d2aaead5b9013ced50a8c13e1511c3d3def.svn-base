@@ -1,0 +1,36 @@
+package com.zhidisoft.accumulation_fund.service.impl;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.zhidisoft.accumulation_fund.dao.AccumulationFundDao;
+import com.zhidisoft.accumulation_fund.entity.AccumulationFund;
+import com.zhidisoft.accumulation_fund.service.AccumulationFundServiceIf;
+import com.zhidisoft.base.BaseServiceImpl;
+import com.zhidisoft.result.PageBean;
+
+@Service
+public class AccumulationFundServiceImpl extends BaseServiceImpl<Integer, AccumulationFund> implements AccumulationFundServiceIf{
+
+
+	
+	public PageBean<AccumulationFund> accumulationFundPageBean(Integer page, Integer rows,String idcard,String accountno) {
+		
+		PageBean<AccumulationFund> pageBean = new PageBean<AccumulationFund>();
+		pageBean.setPage(page);
+		pageBean.setRows(rows);
+		Map<String, Object> condition = new HashMap<String, Object>();
+		condition.put("idcard", idcard);
+		condition.put("accountno", accountno);
+		pageBean.setCondition(condition);
+		return pageBean;
+	}
+	
+	
+
+}

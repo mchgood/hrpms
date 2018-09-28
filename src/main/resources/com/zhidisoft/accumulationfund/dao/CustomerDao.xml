@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhidisoft.accumulationfund.dao.CustomerDao">
+  <resultMap id="BaseResultMap" type="com.zhidisoft.accumulationfund.entity.Customer">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="idCard" jdbcType="VARCHAR" property="idcard" />
+    <result column="sex" jdbcType="VARCHAR" property="sex" />
+    <result column="birthday" jdbcType="DATE" property="birthday" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="zipCode" jdbcType="VARCHAR" property="zipcode" />
+    <result column="school" jdbcType="VARCHAR" property="school" />
+    <result column="specialty" jdbcType="VARCHAR" property="specialty" />
+    <result column="graduation" jdbcType="VARCHAR" property="graduation" />
+    <result column="companyId" jdbcType="INTEGER" property="companyid" />
+    <result column="customerType" jdbcType="VARCHAR" property="customertype" />
+    <result column="isSalary" jdbcType="VARCHAR" property="issalary" />
+    <result column="isShebao" jdbcType="VARCHAR" property="isshebao" />
+    <result column="isGongjijin" jdbcType="VARCHAR" property="isgongjijin" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="delFlag" jdbcType="VARCHAR" property="delflag" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="createBy" jdbcType="INTEGER" property="createby" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="updateBy" jdbcType="INTEGER" property="updateby" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from tb_customer
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.zhidisoft.accumulationfund.entity.Customer">
+    insert into tb_customer (id, name, idCard, 
+      sex, birthday, phone, 
+      email, address, zipCode, 
+      school, specialty, graduation, 
+      companyId, customerType, isSalary, 
+      isShebao, isGongjijin,
+      delFlag, createTime, createBy, 
+      updateTime, updateBy, remark
+      )
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{idcard,jdbcType=VARCHAR}, 
+      #{sex,jdbcType=VARCHAR}, #{birthday,jdbcType=DATE}, #{phone,jdbcType=VARCHAR}, 
+      #{email,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{zipcode,jdbcType=VARCHAR}, 
+      #{school,jdbcType=VARCHAR}, #{specialty,jdbcType=VARCHAR}, #{graduation,jdbcType=VARCHAR}, 
+      #{companyid,jdbcType=INTEGER}, #{customertype,jdbcType=VARCHAR}, #{issalary,jdbcType=VARCHAR}, 
+      #{isshebao,jdbcType=VARCHAR}, #{isgongjijin,jdbcType=VARCHAR}, 
+      #{delflag,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, #{createby,jdbcType=INTEGER}, 
+      #{updatetime,jdbcType=TIMESTAMP}, #{updateby,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.zhidisoft.accumulationfund.entity.Customer">
+    update tb_customer
+    set name = #{name,jdbcType=VARCHAR},
+      idCard = #{idcard,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=VARCHAR},
+      birthday = #{birthday,jdbcType=DATE},
+      phone = #{phone,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      zipCode = #{zipcode,jdbcType=VARCHAR},
+      school = #{school,jdbcType=VARCHAR},
+      specialty = #{specialty,jdbcType=VARCHAR},
+      graduation = #{graduation,jdbcType=VARCHAR},
+      companyId = #{companyid,jdbcType=INTEGER},
+      customerType = #{customertype,jdbcType=VARCHAR},
+      isSalary = #{issalary,jdbcType=VARCHAR},
+      isShebao = #{isshebao,jdbcType=VARCHAR},
+      isGongjijin = #{isgongjijin,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      delFlag = #{delflag,jdbcType=VARCHAR},
+      createTime = #{createtime,jdbcType=TIMESTAMP},
+      createBy = #{createby,jdbcType=INTEGER},
+      updateTime = #{updatetime,jdbcType=TIMESTAMP},
+      updateBy = #{updateby,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, name, idCard, sex, birthday, phone, email, address, zipCode, school, specialty, 
+    graduation, companyId, customerType, isSalary, isShebao, isGongjijin, status, delFlag, 
+    createTime, createBy, updateTime, updateBy, remark
+    from tb_customer
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, name, idCard, sex, birthday, phone, email, address, zipCode, school, specialty, 
+    graduation, companyId, customerType, isSalary, isShebao, isGongjijin, status, delFlag, 
+    createTime, createBy, updateTime, updateBy, remark
+    from tb_customer
+  </select>
+  
+  <select id="selectByIdCard" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select id, name, idCard, sex, birthday, phone, email, address, zipCode, school, specialty, 
+    graduation, companyId, customerType, isSalary, isShebao, isGongjijin, status, delFlag, 
+    createTime, createBy, updateTime, updateBy, remark
+    from tb_customer
+    where idcard = #{idcard,jdbcType=INTEGER}
+  </select>
+ 
+ <!--修改客户信息  -->
+  <update id="updateCustomerUser" parameterType="com.zhidisoft.accumulationfund.entity.Customer">
+    update tb_customer
+    set name = #{name,jdbcType=VARCHAR},
+      idCard = #{idcard,jdbcType=VARCHAR}
+    where idCard = #{idcard,jdbcType=VARCHAR}
+  </update>
+</mapper>

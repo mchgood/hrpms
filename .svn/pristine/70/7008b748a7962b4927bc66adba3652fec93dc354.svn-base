@@ -1,0 +1,90 @@
+package com.zhidisoft.marketingmanagement.controller;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.zhidisoft.base.BaseController;
+import com.zhidisoft.marketingmanagement.entity.Email;
+import com.zhidisoft.marketingmanagement.entity.Sms;
+import com.zhidisoft.marketingmanagement.service.EmailService;
+import com.zhidisoft.marketingmanagement.service.SmsService;
+import com.zhidisoft.marketingmanagement.service.imp.EmailServiceImp;
+import com.zhidisoft.result.JsonResult;
+import com.zhidisoft.result.PageBean;
+import com.zhidisoft.system.entity.User;
+
+
+@Controller
+@RequestMapping("/market")
+public class EmailController extends BaseController{
+	@Resource
+	EmailService emailService;
+	
+	@Resource
+	SmsService smsService;
+	/**
+	 * 邮件分页查询
+	 * @param page
+	 * @param rows
+	 * @param userName
+	 * @param toAddr
+	 * @return
+	 */
+	
+	@RequestMapping("/emailInfo")
+	@ResponseBody
+	public JsonResult emailInfo(Integer page,Integer rows,String sendName,String toAddr){
+		PageBean<Email> emailPageBean = new PageBean<Email>();
+		emailPageBean.setPage(page);
+		emailPageBean.setRows(rows);
+		
+		Map<String, Object> condition = new HashMap<String, Object>();
+		condition.put("sendName", sendName);
+		condition.put("toAddr", toAddr);
+		emailPageBean.setCondition(condition);
+		
+		PageBean<Email> pageBean = emailService.findByPage(emailPageBean);
+		return JsonResult.buildSuccessResult(pageBean);
+
+	}
+	/**
+	 * 跳转邮件修改页面
+	 * @return
+	 */
+	@RequestMapping("/emailedit")
+	public String emailEdit(){
+		return "market/emailedit";
+		
+	}
+	/**
+	 * 短信分页
+	 * @param page
+	 * @param rows
+	 * @param sendName
+	 * @param toAddr
+	 * @return
+	 */
+	@RequestMapping("/messageInfo")
+	@ResponseBody
+	public JsonResult messageInfo(Integer page,Integer rows,String sendName,String telephone){
+		PageBean<Sms> messagePageBean = new PageBean<Sms>();
+		messagePageBean.setPage(page);
+		messagePageBean.setRows(rows);
+		
+		Map<String, Object> condition = new HashMap<String, Object>();
+		condition.put("sendName", sendName);
+		condition.put("telephone", telephone);
+		messagePageBean.setCondition(condition);
+		
+		PageBean<Sms> pageBean = smsService.findByPage(messagePageBean);
+		return JsonResult.buildSuccessResult(pageBean);
+
+	}
+
+}

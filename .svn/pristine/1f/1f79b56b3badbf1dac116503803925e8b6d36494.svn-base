@@ -1,0 +1,25 @@
+package com.zhidisoft.system.service.impl;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.zhidisoft.base.BaseServiceImpl;
+import com.zhidisoft.system.dao.UserDao;
+import com.zhidisoft.system.entity.User;
+import com.zhidisoft.system.service.UserServiceIf;
+
+@Service
+public class UserServiceImpl extends BaseServiceImpl<Integer, User> implements UserServiceIf{
+	@Resource
+	UserDao userDao;
+	
+	public boolean findByName(User user) {
+		User dbUser = userDao.findByName(user.getUsername());
+		if(dbUser.getPassword().equals(user.getPassword())) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+}

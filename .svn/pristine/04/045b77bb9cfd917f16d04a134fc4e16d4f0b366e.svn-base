@@ -1,0 +1,37 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%  
+String path = request.getContextPath();  
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";  
+%>
+<!DOCTYPE html >
+<html>
+<head>
+<base href="<%=basePath%>">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+<%@include file="../../script.html" %>
+</head>
+<body>
+<table id="template-email" class="easyui-datagrid">
+  <thead>
+		<tr>
+			<th data-options="field:'code'">模板名称</th>
+			<th data-options="field:'name'">主题</th>
+			<th data-options="field:'price'">内容</th>
+		</tr>
+    </thead>
+    <tbody>
+		<tr>
+			<td>001</td><td>name1</td><td>2323</td>
+		</tr>
+		<tr>
+			<td>002</td><td>name2</td><td>4612</td>
+		</tr>
+	</tbody>
+
+</table>
+<button id="check" class="easyui-linkbutton" style="background-color:#1E90FF;color: white;margin-left: 250px">应用</button>
+
+</body>
+</html>

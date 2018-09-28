@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhidisoft.system.dao.UserDao">
+  <resultMap id="BaseResultMap" type="com.zhidisoft.system.entity.User">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="sortnum" jdbcType="INTEGER" property="sortnum" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="createBy" jdbcType="INTEGER" property="createby" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="updateBy" jdbcType="INTEGER" property="updateby" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="userNote" jdbcType="VARCHAR" property="usernote" />
+    <result column="salt" jdbcType="VARCHAR" property="salt" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from tb_system_user
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.zhidisoft.system.entity.User">
+    insert into tb_system_user (id, username, password, 
+      email, phone, sortnum, 
+      status, createBy, createTime, 
+      updateBy, updateTime, userNote, 
+      salt)
+    values (#{id,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{email,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{sortnum,jdbcType=INTEGER}, 
+      #{status,jdbcType=VARCHAR}, #{createby,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, 
+      #{updateby,jdbcType=INTEGER}, #{updatetime,jdbcType=TIMESTAMP}, #{usernote,jdbcType=VARCHAR}, 
+      #{salt,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.zhidisoft.system.entity.User">
+    update tb_system_user
+    set username = #{username,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      sortnum = #{sortnum,jdbcType=INTEGER},
+      status = #{status,jdbcType=VARCHAR},
+      createBy = #{createby,jdbcType=INTEGER},
+      createTime = #{createtime,jdbcType=TIMESTAMP},
+      updateBy = #{updateby,jdbcType=INTEGER},
+      updateTime = #{updatetime,jdbcType=TIMESTAMP},
+      userNote = #{usernote,jdbcType=VARCHAR},
+      salt = #{salt,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, username, password, email, phone, sortnum, status, createBy, createTime, 
+    updateBy, updateTime, userNote, salt
+    from tb_system_user
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, username, password, email, phone, sortnum, status, createBy, createTime, 
+    updateBy, updateTime, userNote, salt
+    from tb_system_user
+  </select>
+  
+  <!-- 通过用户名查询用户信息 -->
+  <select id="findByName" resultMap="BaseResultMap">
+    select id, username, password, email, phone, sortnum, status, createBy, createTime, 
+    updateBy, updateTime, userNote, salt
+    from tb_system_user where username=#{username} and status=1
+  </select>
+  
+  
+  <!-- 分页开始 -->
+ 	<sql id="pageComm">
+ 	  <where>
+			<if test="condition != null">
+			     <if test="condition.username!=null and condition.username!=''">
+	                and username like concat("%",#{condition.username},"%")
+	            </if>
+	            
+                <if test="condition.status==1 or condition.status==0">
+                    and status = #{condition.status}
+                </if>
+                <if test="condition.status==-1 or condition.status==null">
+                    and status &gt; -1
+                </if>
+
+	            <if test="condition.phone!=null and condition.phone!=''">
+	                and phone = #{condition.phone}
+	            </if>
+			</if>
+		</where>
+	</sql>
+	
+  <select id="findByPage" parameterType="Map" resultMap="BaseResultMap">
+  	select id, username, password, email, phone, sortnum, status, createBy, createTime, 
+    updateBy, updateTime, userNote, salt
+    from tb_system_user 
+   <include refid="pageComm"/>
+    LIMIT #{offset},#{pageSize}
+  </select>
+  
+  <select id="count" parameterType="Map" resultType="java.lang.Integer">
+  	select count(id)
+    from tb_system_user
+    <include refid="pageComm"/>
+  </select>
+  <!-- 分页结束 -->
+  
+  <!-- 根据用户名更新用户信息 -->
+  <update id="updateByusername" parameterType="com.zhidisoft.system.entity.User">
+      update tb_system_user
+        set password = #{password,jdbcType=VARCHAR},
+	      email = #{email,jdbcType=VARCHAR},
+	      phone = #{phone,jdbcType=VARCHAR},
+	      sortnum = #{sortnum,jdbcType=INTEGER},
+	      status = #{status,jdbcType=VARCHAR},
+	      createBy = #{createby,jdbcType=INTEGER},
+	      createTime = #{createtime,jdbcType=TIMESTAMP},
+	      updateBy = #{updateby,jdbcType=INTEGER},
+	      updateTime = #{updatetime,jdbcType=TIMESTAMP},
+	      userNote = #{usernote,jdbcType=VARCHAR},
+	      salt = #{salt,jdbcType=VARCHAR}
+    where username = #{username,jdbcType=INTEGER}
+  </update>
+  
+  <!-- 逻辑删除USER -->
+  <update id="deleteUserById" parameterType="java.lang.Integer">
+    update tb_system_user
+        set status = -1
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

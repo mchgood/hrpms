@@ -1,0 +1,100 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%  
+String path = request.getContextPath();  
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";  
+%>
+<!DOCTYPE html >
+<html>
+<head>
+<base href="<%=basePath%>">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+ <%@include file="../../script.html" %>
+</head>
+<body>
+<div id="personjobcount" class="easyui-tabs" style="width:100%;height:500px;" >
+    <div title="人才外包费用统计" style="padding:20px;display:none;" >
+	<div >
+			<span>客户名称：</span>
+			<input type="text" class="easyui-textbox" id="customerName" name="customerName">					
+			<span>身份证号：</span>
+			<input type="text" class="easyui-textbox" id="idcard" name="idcard">
+			<span>手机号码：</span>
+			<input type="text" class="easyui-textbox" id="phone" name="phone">
+			<span>合作公司：</span>
+			<input type="text" class="easyui-textbox" id="companyName" name="companyName">
+			<a href="javascript:void(0)" class="easyui-linkbutton"  id="search-personjob" >统计</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton"  id="search-email" >导出</a>
+		</div>
+		<table id="datagrid-personjobcount" style="width: 100%"></table>
+</div>
+</div>
+</body>
+<script type="text/javascript">
+
+
+
+//统计分页
+ $("#datagrid-personjobcount").datagrid({
+	url:"statistics/personjobcountInfo",
+	method:"post",
+	toolbar:"#toolbar",
+	fitColumns:true, //自动调整列宽
+	
+	rownumbers:true, // 显示行号
+	pagination:true, // 使用分页
+	columns:[[
+		{field:"name",title:"客户名称",formatter:function(value,rowValue,index){
+			if(rowValue.customer.customerName){
+			return rowValue.customer.customerName;
+				}
+		 }},
+		{field:"idcard",title:"身份证号"},
+		{field:"customer.phone",title:"手机号码",formatter:function(value,rowValue,index){
+			if(rowValue.customer.phone){
+				return rowValue.customer.phone;
+					}
+			 }},
+		{field:"company.name",title:"合作公司",formatter:function(value,rowValue,index){
+			if(rowValue.company.companyName){
+				return rowValue.company.companyName;
+					}
+			 }},
+		{field:"months",title:"合作天数"},
+		{field:"companyprice",title:"公司付款总额"},
+		{field:"personprice",title:"支付员工总额"},
+		{field:"profit",title:"利润总额"},
+		{field:"status",title:"合作状态",formatter:function(value,rowValue,index){
+			if(value==1){
+				return "合作结束";
+			}else {
+				return "正在合作";
+			}
+		}}
+	
+	
+	]],
+	loadFilter:function(data){
+		if(data && data.success){
+			return {"total":data.result.total,"rows":data.result.rows};
+		}
+	}
+})	 
+//统计
+$("#search-personjob").on("click", function search(){
+    var customerName = $("#customerName").val();
+    var idcard = $("#idcard").val();
+    var phone= $("#phone").val();
+    var companyName = $("#companyName").val();
+  
+    $("#datagrid-personjobcount").datagrid("load",{            
+        "customerName":customerName,
+        "idcard":idcard,
+        "phone":phone,
+        "companyName":companyName
+    })
+})
+
+</script>
+</html>

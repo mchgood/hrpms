@@ -1,0 +1,10 @@
+package com.zhidisoft.system.service;
+
+import java.util.List;
+
+import com.zhidisoft.base.IBaseService;
+import com.zhidisoft.system.entity.Function;
+
+public interface FunctionServiceIf extends IBaseService<Integer, Function>{
+	List<Function> findFunListByRoleId(Integer roleId);
+}

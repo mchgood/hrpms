@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
+	
+	<!-- 
+		扫描controller包下的类，将含有注解@Component @Controller@Service
+		自动注册为bean
+	-->
+	<context:component-scan base-package="com.zhidisoft.**.controller" />
+	
+	
+	<!-- mvc注解驱动开关  -->
+	<!-- 开启mvc注解开关 -->
+	<mvc:annotation-driven >
+	<mvc:message-converters register-defaults="true">
+			<ref bean="mappingJackson2HttpMessageConverter"/>
+		</mvc:message-converters>
+	</mvc:annotation-driven>
+	
+	<!-- 开启aop，使用CGlib基于继承的动态代理 -->
+    <aop:config proxy-target-class="true"></aop:config>
+	
+	<!-- 将内部资源视图解析器 纳入到ioc容器中 -->
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/"></property> <!-- 前缀 -->
+		<property name="suffix" value=".jsp"></property>
+	</bean>
+	
+	<!-- 处理静态资源 -->
+	<mvc:resources location="/static/" mapping="/static/**"></mvc:resources>
+	
+	<bean id="simpleDateFormat" class="java.text.SimpleDateFormat">
+		<constructor-arg value="yyyy-MM-dd HH:mm:ss"></constructor-arg>
+	</bean>
+	
+	<!-- json日期处理 -->
+	<bean id="mappingJackson2HttpMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+		<property name="objectMapper">
+			<bean class="com.fasterxml.jackson.databind.ObjectMapper">
+				<!-- 设置要转换成的日期格式 -->
+				<property name="dateFormat" ref="simpleDateFormat"></property>
+				<!-- 设置时区 -->
+				<property name="timeZone" value="GMT+8"></property>
+				<!-- 设置地区 -->
+				<property name="locale" value="CHINA"> </property>				
+			</bean>
+		</property>
+	</bean>
+	
+
+</beans>

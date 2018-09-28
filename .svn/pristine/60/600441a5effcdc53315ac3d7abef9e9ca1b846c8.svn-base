@@ -1,0 +1,79 @@
+package com.zhidisoft.system.service.impl;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.zhidisoft.base.BaseServiceImpl;
+import com.zhidisoft.system.dao.RoleDao;
+import com.zhidisoft.system.dao.UserDao;
+import com.zhidisoft.system.entity.Role;
+import com.zhidisoft.system.service.RolrServiceIf;
+
+@Service
+public class RolerServiceImpl extends BaseServiceImpl<Integer, Role> implements RolrServiceIf {
+	
+	@Resource
+	RoleDao roleDao;
+	@Resource
+	UserDao userDao;
+	
+	public Map<String,Object> findRoleList(Integer UserId){
+	    Map map = new HashMap<String,Object>();
+	    //通过userId查询到user的所有角色信息
+		List<Role> roleList = roleDao.findRoleList(UserId);
+		//遍历user的角色信息
+		for (Role role : roleList) {
+            if(role.getId()==4) {
+                map.put("admin", 1);
+            }
+            if(role.getId()==5) {
+                map.put("leader", 2);
+            }
+            if(role.getId()==6) {
+                map.put("business", 3);
+            }
+            if(role.getId()==7) {
+                map.put("web", 4);
+            }
+        }
+		return map;
+	}
+	
+    @Override
+    public int deleteByUserId(Integer userId) {
+        int row = roleDao.deleteByUserId(userId);
+        return row;
+    }
+    
+    @Override
+    public int addUserRole(Integer userId,String admin,String leader,String business,String web) {
+        int adminR = 0;
+        int leaderR = 0;
+        int webR = 0;
+        int businessR = 0;
+        if(admin!=null && admin!="") {
+            adminR = roleDao.addUserRole(userId, Integer.valueOf(admin)+3);
+        }
+        
+        if(leader!=null && leader!="") {
+            leaderR = roleDao.addUserRole(userId, Integer.valueOf(leader)+3);
+        }
+        
+        if(web!=null && web!="") {
+           webR = roleDao.addUserRole(userId, Integer.valueOf(web)+3);
+        }
+        if(business!=null && business!="") {
+            businessR = roleDao.addUserRole(userId, Integer.valueOf(business)+3);
+        }
+        if(adminR>=0 && leaderR>=0 && webR>=0 && businessR>=0) {
+            return 1;
+        }else {
+            return -1;
+        }
+    }
+}

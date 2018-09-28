@@ -1,0 +1,55 @@
+package com.zhidisoft.accumulation_fund.controller;
+
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.zhidisoft.accumulation_fund.entity.AccumulationFund;
+import com.zhidisoft.accumulation_fund.service.AccumulationFundServiceIf;
+
+import com.zhidisoft.result.JsonResult;
+import com.zhidisoft.system.entity.User;
+
+@Controller
+public class ProvidentFundUserController {
+	
+	@Resource
+	AccumulationFundServiceIf fundService;
+	
+	/**
+	 * 删除
+	 * */
+	@RequestMapping("/ProvidentFund/deleteFundUser")
+    @ResponseBody
+	public JsonResult deleteUser(Integer id) {
+	    int rows = fundService.deleteByPrimaryKey(id);
+	    if(rows>0) {
+	        return JsonResult.buildSuccessResult();
+	    }else {
+	        return JsonResult.buildFailResult("删除失败");
+	    }
+	}
+	
+	/**
+	 * 修改
+	 * */
+	
+	
+	@RequestMapping("/ProvidentFund/changeFundUser")
+	public ModelAndView changeUser(Integer id) {
+	    ModelAndView modelAndView = new ModelAndView();
+	    if(id!=0) {
+	        //通过用户ID获取用户的实体类对象
+	    	AccumulationFund findById = fundService.findById(id);
+	    	modelAndView.addObject("map", findById);
+	    }
+	    modelAndView.setViewName("AccumulationFund/changeFundUser");
+	    return modelAndView;
+	}
+
+}

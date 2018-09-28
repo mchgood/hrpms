@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhidisoft.system.dao.FunctionDao">
+  <resultMap id="BaseResultMap" type="com.zhidisoft.system.entity.Function">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="funcName" jdbcType="VARCHAR" property="funcname" />
+    <result column="funcURL" jdbcType="VARCHAR" property="funcurl" />
+    <result column="funCode" jdbcType="VARCHAR" property="funcode" />
+    <result column="funcType" jdbcType="INTEGER" property="functype" />
+    <result column="parentId" jdbcType="INTEGER" property="parentid" />
+    <result column="IconClass" jdbcType="VARCHAR" property="iconclass" />
+    <result column="IconURL" jdbcType="VARCHAR" property="iconurl" />
+    <result column="sortNum" jdbcType="INTEGER" property="sortnum" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="createBy" jdbcType="INTEGER" property="createby" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="updateBy" jdbcType="INTEGER" property="updateby" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="funcNote" jdbcType="VARCHAR" property="funcnote" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from tb_system_function
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.zhidisoft.system.entity.Function">
+    insert into tb_system_function (id, funcName, funcURL, 
+      funCode, funcType, parentId, 
+      IconClass, IconURL, sortNum, 
+      status, createBy, createTime, 
+      updateBy, updateTime, funcNote
+      )
+    values (#{id,jdbcType=INTEGER}, #{funcname,jdbcType=VARCHAR}, #{funcurl,jdbcType=VARCHAR}, 
+      #{funcode,jdbcType=VARCHAR}, #{functype,jdbcType=INTEGER}, #{parentid,jdbcType=INTEGER}, 
+      #{iconclass,jdbcType=VARCHAR}, #{iconurl,jdbcType=VARCHAR}, #{sortnum,jdbcType=INTEGER}, 
+      #{status,jdbcType=VARCHAR}, #{createby,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, 
+      #{updateby,jdbcType=INTEGER}, #{updatetime,jdbcType=TIMESTAMP}, #{funcnote,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.zhidisoft.system.entity.Function">
+    update tb_system_function
+    set funcName = #{funcname,jdbcType=VARCHAR},
+      funcURL = #{funcurl,jdbcType=VARCHAR},
+      funCode = #{funcode,jdbcType=VARCHAR},
+      funcType = #{functype,jdbcType=INTEGER},
+      parentId = #{parentid,jdbcType=INTEGER},
+      IconClass = #{iconclass,jdbcType=VARCHAR},
+      IconURL = #{iconurl,jdbcType=VARCHAR},
+      sortNum = #{sortnum,jdbcType=INTEGER},
+      status = #{status,jdbcType=VARCHAR},
+      createBy = #{createby,jdbcType=INTEGER},
+      createTime = #{createtime,jdbcType=TIMESTAMP},
+      updateBy = #{updateby,jdbcType=INTEGER},
+      updateTime = #{updatetime,jdbcType=TIMESTAMP},
+      funcNote = #{funcnote,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, funcName, funcURL, funCode, funcType, parentId, IconClass, IconURL, sortNum, 
+    status, createBy, createTime, updateBy, updateTime, funcNote
+    from tb_system_function
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, funcName, funcURL, funCode, funcType, parentId, IconClass, IconURL, sortNum, 
+    status, createBy, createTime, updateBy, updateTime, funcNote
+    from tb_system_function
+  </select>
+  
+  <!-- 通过角色ID查询角色  -->
+  <select id="findFunListByRoleId" resultMap="BaseResultMap">
+      SELECT f.* FROM tb_system_role AS r,tb_system_function AS f,tb_role_function AS rf
+	  WHERE r.id=rf.roleId AND f.id=rf.funcId AND r.id=#{roleId}
+  </select>
+  
+  <!-- 通过角色id查询功能 -->
+  <select id="findFunListByParentId" resultMap="BaseResultMap">
+    SELECT id, funcName, funcURL, funCode, funcType, parentId, IconClass, IconURL, sortNum, 
+    status, createBy, createTime, updateBy, updateTime, funcNote
+     FROM tb_system_function WHERE parentId=#{parentId}
+  </select>
+</mapper>

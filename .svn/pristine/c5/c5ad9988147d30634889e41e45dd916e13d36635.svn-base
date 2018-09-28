@@ -1,0 +1,10 @@
+package com.zhidisoft.accumulation_fund.service;
+
+import com.zhidisoft.accumulation_fund.entity.Customer;
+import com.zhidisoft.base.IBaseService;
+
+
+public interface CustomerServiceIf extends IBaseService<Integer,Customer> {
+	Customer findByIdCard(String idcard);
+	int updateCustomerUser(String name,String idCard);
+}

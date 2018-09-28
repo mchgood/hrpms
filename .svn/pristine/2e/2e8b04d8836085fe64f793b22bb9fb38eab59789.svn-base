@@ -1,0 +1,15 @@
+package com.zhidisoft.system.dao;
+
+import com.zhidisoft.base.IBaseDao;
+import com.zhidisoft.system.entity.User;
+import java.util.List;
+
+public interface UserDao extends IBaseDao<Integer, User>{
+	User findByName(String username);
+	
+	User findByNameIgnoreStatus(String username);
+	
+	int updateByusername(User user);
+	
+	int deleteUserById(Integer id);
+}

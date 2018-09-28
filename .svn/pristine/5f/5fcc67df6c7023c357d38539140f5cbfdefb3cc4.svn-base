@@ -1,0 +1,50 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%  
+String path = request.getContextPath();  
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";  
+%>
+<!DOCTYPE html >
+<html>
+<head>
+<base href="<%=basePath%>">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+ <%@include file="../../script.html" %>
+ 
+</head>
+<body>
+<div id="smsedit" class="easyui-tabs" style="width:100%;height:500px;">
+ <div title="邮件修改" data-options="closable:false" style="overflow:auto;padding:20px;display:none;">
+ 
+  
+    <form id="ff" method="post">
+	    	<table >
+	    		<tr>
+	    			<td>发送人:</td>
+	    			<td><input class="easyui-textbox" type="text" name="userId" data-options="required:true"></input></td>
+	    		</tr>
+	    		<tr>
+	    			<td>接收人电话:</td>
+	    			<td><input class="easyui-textbox" type="text" name="telephone" data-options="required:true"></input></td>
+	    		</tr>
+	    		<tr>
+	    			<td>短信模板:</td>
+	    			<td><input class="easyui-textbox" type="text" name="subject" data-options="required:true"></input></td>
+	    		</tr>
+	    	
+	    		<tr>
+	    			<td>短信内容:</td>
+	    			<td><input class="easyui-textbox" name="content" data-options="multiline:true" style="height:80px;width: 250px"></input></td>
+	    		</tr>
+	    	
+	    	</table>
+	    	<button  class="easyui-linkbutton" style="background-color:#1E90FF;color: white;">保存</button>
+	    	    	<a href="javascript:history.back();" class="easyui-linkbutton" style="background-color:#1E90FF;color: white;">返回</a>
+	    </form>
+    </div>
+</div>
+</body>
+
+
+</html>

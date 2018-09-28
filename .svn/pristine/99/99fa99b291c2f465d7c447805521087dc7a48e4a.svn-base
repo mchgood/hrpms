@@ -1,0 +1,207 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+<%@ tagliburi="http://shiro.apache.org/tags" prefix="shiro" %>
+<!DOCTYPE html>
+<html>
+<head>
+  <base href="<%=basePath%>">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>安思惠普人事代理系统</title>
+  <%@include file="/script.html" %>
+</head>
+<body class="easyui-layout">
+<!-- 顶部div开始 -->
+<div  data-options="region:'north'" style="height: 50px">
+    <div class="theme-navigate" style="background-color: #0c80d7">
+        <div class="left" >
+            <h3>安思惠普人事代理系统</h3>
+        </div>
+        <div class="right">
+            <a href="#" class="easyui-menubutton theme-navigate-user-button" data-options="menu:'.theme-navigate-user-panel'">
+                <p>郑州二七领导</p>
+            </a>
+            <div class="theme-navigate-user-panel">
+                <dl>
+                    <dd>
+                        <img src="static/easyui/themes/insdep/images/portrait86x86.png" width="86" height="86">
+                        <b class="badge-prompt"><acl:user property="userName"/></b>
+                        <p>
+                            安全等级：<i class="text-success">高</i>
+                        </p>
+                    </dd>
+                    <dt>
+                        <a class="theme-navigate-user-modify">修改资料</a>
+                        <a id="logout" class="theme-navigate-user-logout">注销</a>
+                    </dt>
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 顶部div结束 -->
+
+<!-- 菜单div开始 -->
+<div data-options="region:'west'" style="width: 200px">
+    <!-- 折叠面板效果 -->
+    <div class="easyui-accordion" data-options="fit:true" >
+        <!-- 每个子div是其中的一个面板 -->
+        <div style="font-family:'宋体'; font-size:14px;" title="<font color='#0c80d7'>个人信息</font>" >
+                <a class="easyui-linkbutton" onclick="doAdd('个人信息','www.baidu.com');" style="width: 195px">个人信息</a>
+                <a class="easyui-linkbutton" onclick="doAdd('修改密码','https://www.sogou.com');" style="width: 195px">修改密码</a>
+        </div>
+
+    <shiro:hasPermission name="客户管理"> 
+        <div style="font-family:'宋体'; font-size:14px;" title="<font color='#0c80d7'>客户管理</font>" >
+            <a class="easyui-linkbutton" onclick="doAdd('公司客户','www.baidu.com');" style="width: 195px">公司客户</a>
+            <a class="easyui-linkbutton" onclick="doAdd('个人客户','https://www.sogou.com');" style="width: 195px">个人客户</a>
+        </div>
+    </shiro:hasPermission>
+	
+	<shiro:hasPermission name="社保管理">
+        <div style="font-family:'宋体'; font-size:14px;" title="<font color='#0c80d7'>社保管理</font>" >
+            <a class="easyui-linkbutton" onclick="doAdd('社保信息','www.baidu.com');" style="width: 195px">社保信息</a>
+            <a class="easyui-linkbutton" onclick="doAdd('社保记录','https://www.sogou.com');" style="width: 195px">社保记录</a>
+            <a class="easyui-linkbutton" onclick="doAdd('社保缴费','https://www.sogou.com');" style="width: 195px">社保缴费</a>
+            <a class="easyui-linkbutton" onclick="doAdd('社保催缴','https://www.sogou.com');" style="width: 195px">社保催缴</a>
+        </div>
+    </shiro:hasPermission>
+
+	<shiro:hasPermission name="公积金管理">
+        <div style="font-family:'宋体'; font-size:14px;" title="<font color='#0c80d7'>公积金管理</font>" >
+            <a class="easyui-linkbutton" onclick="doAdd('公积金查询','www.baidu.com');" style="width: 195px">公积金查询</a>
+            <a class="easyui-linkbutton" onclick="doAdd('公积金缴费','https://www.sogou.com');" style="width: 195px">公积金缴费</a>
+            <a class="easyui-linkbutton" onclick="doAdd('公积金催缴','https://www.sogou.com');" style="width: 195px">公积金催缴</a>
+        </div>
+	</shiro:hasPermission>
+	
+	<shiro:hasPermission name="薪酬管理">
+        <div style="font-family:'宋体'; font-size:14px;" title="<font color='#0c80d7'>薪酬管理</font>" >
+            <a class="easyui-linkbutton" onclick="doAdd('工资查询','www.baidu.com');" style="width: 195px">工资查询</a>
+            <a class="easyui-linkbutton" onclick="doAdd('代发工资','https://www.sogou.com');" style="width: 195px">代发工资</a>
+            <a class="easyui-linkbutton" onclick="doAdd('工资条','https://www.sogou.com');" style="width: 195px">工资条</a>
+        </div>
+	</shiro:hasPermission>
+	
+	<shiro:hasPermission name="人才服务">
+        <div style="font-family:'宋体'; font-size:14px;" title="<font color='#0c80d7'>人才服务</font>" >
+            <a class="easyui-linkbutton" onclick="doAdd('招聘信息','www.baidu.com');" style="width: 195px">招聘信息</a>
+            <a class="easyui-linkbutton" onclick="doAdd('人才信息','https://www.sogou.com');" style="width: 195px">人才信息</a>
+            <a class="easyui-linkbutton" onclick="doAdd('劳务派遣','https://www.sogou.com');" style="width: 195px">劳务派遣</a>
+        </div>
+	</shiro:hasPermission>
+	
+	<shiro:hasPermission name="营销管理">
+        <div style="font-family:'宋体'; font-size:14px;" title="<font color='#0c80d7'>营销管理</font>" >
+
+            <a class="easyui-linkbutton" onclick="doAdd('营销查询','toSendList');" style="width: 195px">营销查询</a>
+            <a class="easyui-linkbutton" onclick="doAdd('','https://www.sogou.com');" style="width: 195px">短信营销</a>
+            <a class="easyui-linkbutton" onclick="doAdd('搜狗','https://www.sogou.com');" style="width: 195px">邮件营销</a>
+
+        </div>
+	</shiro:hasPermission>
+	
+	<shiro:hasPermission name="报表统计">
+        <div style="font-family:'宋体'; font-size:14px;" title="<font color='#0c80d7'>报表统计</font>" >
+            <a class="easyui-linkbutton" onclick="doAdd('社保费用统计','www.baidu.com');" style="width: 195px">社保费用统计</a>
+            <a class="easyui-linkbutton" onclick="doAdd('公积金统计','https://www.sogou.com');" style="width: 195px">公积金统计</a>
+            <a class="easyui-linkbutton" onclick="doAdd('工资费用统计','https://www.sogou.com');" style="width: 195px">工资费用统计</a>
+            <a class="easyui-linkbutton" onclick="doAdd('人才外包统计','https://www.sogou.com');" style="width: 195px">人才外包统计</a>
+            <a class="easyui-linkbutton" onclick="doAdd('财务报表统计','https://www.sogou.com');" style="width: 195px">财务报表统计</a>
+        </div>
+	</shiro:hasPermission>
+	
+	<shiro:hasPermission name="内容管理">
+        <div style="font-family:'宋体'; font-size:14px;" title="<font color='#0c80d7'>内容管理</font>" >
+            <a class="easyui-linkbutton" onclick="doAdd('新闻管理','www.baidu.com');" style="width: 195px">新闻管理</a>
+            <a class="easyui-linkbutton" onclick="doAdd('留言管理','https://www.sogou.com');" style="width: 195px">留言管理</a>
+            <a class="easyui-linkbutton" onclick="doAdd('回复管理','https://www.sogou.com');" style="width: 195px">回复管理</a>
+        </div>
+    </shiro:hasPermission>
+    
+    <shiro:hasPermission name="系统设置">
+        <div style="font-family:'宋体'; font-size:14px;" title="<font color='#0c80d7'>系统设置</font>" >
+            <a class="easyui-linkbutton" onclick="doAdd('用户管理','touserInfo');" style="width: 195px">用户管理</a>
+            <a class="easyui-linkbutton" onclick="doAdd('角色管理','https://www.sogou.com');" style="width: 195px">角色管理</a>
+            <a class="easyui-linkbutton" onclick="doAdd('菜单管理','https://www.sogou.com');" style="width: 195px">菜单管理</a>
+            <a class="easyui-linkbutton" onclick="doAdd('数据字典','https://www.sogou.com');" style="width: 195px">数据字典</a>
+            <a class="easyui-linkbutton" onclick="doAdd('短信模板','https://www.sogou.com');" style="width: 195px">短信模板</a>
+            <a class="easyui-linkbutton" onclick="doAdd('邮件模板','https://www.sogou.com');" style="width: 195px">邮件模板</a>
+        </div>
+	</shiro:hasPermission>
+
+    </div>
+</div>
+<!-- 菜单div结束 -->
+
+<!-- 中间tab开始 -->
+<div data-options="region:'center'">
+    <!-- 选项卡面板效果 -->
+    <div id="tt" class="easyui-tabs" data-options="fit:true"></div>
+</div>
+<!-- 中间tab结束 -->
+
+<!-- 以后打开弹窗需要依据的div -->
+<div id="topWindow" style="overflow: hidden;"></div>
+
+<!-- 底部版权开始 -->
+<div data-options="region:'south'" style="height: 30px">
+    <div id="footer" class="row-fluid" style="text-align: center">
+        Copyright © 2012-2018 安思普惠人事代理系统 - Powered By <a href="http://jeesite.com/" target="_blank">JeeSite</a> V1.2.7
+    </div>
+</div>
+<!-- 底部版权结束 -->
+</body>
+<script type="text/javascript">
+	
+	//添加tab
+    function doAdd(title,url) {
+        var exists = $("#tt").tabs("exists", title);
+        if (exists) {
+            // 当前页面中存在要添加的tab标签页
+            $("#tt").tabs("select", title);
+        }else {
+            //动态添加一个选项卡面板
+            $("#tt")
+                .tabs(
+                    "add",
+                    {
+                        title : title,
+                        content : '<iframe frameborder="0" width="100%" height="100%" src="'+url+'"></iframe>',
+                        closable : true,
+                    });
+        }
+
+    }
+
+    // 打开窗口
+    function openTopWindow(options){
+        options.width  = options.width ? options.width : 600;
+        options.height = options.height ? options.height : 500;
+        options.title =  options.title ?  options.title : " ";
+        options.onClose = options.onClose ? options.onClose : function(){};
+        if(!options.url){
+            // 如果url不存在，抛出异常，下面的代码就不再执行
+            throw "新窗口必须设置url属性";
+        }
+
+        $("#topWindow").window({
+            width: options.width,
+            height: options.height,
+            title: options.title,
+            modal: true, // 设置弹出的窗口为 模式窗口
+            content:"<iframe width='100%' height='100%' src='"+options.url+"'>",
+            onClose:options.onClose   // 窗口关闭时的回调函数
+        })
+    }
+
+    // 关闭窗口
+    function closeTopWindow(){
+        $("#topWindow").window("close");
+    }
+</script>
+</html>

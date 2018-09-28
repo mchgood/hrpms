@@ -1,0 +1,197 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%  
+String path = request.getContextPath();  
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";  
+%>
+<!DOCTYPE html >
+<html>
+<head>
+<base href="<%=basePath%>">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+ <%@include file="../../script.html" %>
+</head>
+
+<body>
+<div id="sendlist" class="easyui-tabs" style="width:100%;height:500px;" >
+    <div title="邮件发送列表" style="padding:20px;display:none;" >
+	<div id="email" >
+			<span>发信人：</span>
+			<input type="text" class="easyui-textbox" id="sendName-email" name="sendName">			
+		
+			<span>收信人：</span>
+			<input type="text" class="easyui-textbox" id="toAddr" name="toAddr">
+			<a href="javascript:void(0)" class="easyui-linkbutton"  id="search-email" >查询</a>
+			
+		</div>
+		<table id="datagrid-email" style="width: 100%"></table>
+	
+	
+    </div>
+    <div id="smslist" title="短信发送列表" data-options="closable:false" style="overflow:auto;padding:20px;display:none;" >
+		<div id="message">
+			<span>发信人：</span>
+			<input type="text" class="easyui-textbox" id="sendName-message" name="sendName">			
+		
+			<span>收信人：</span>
+			<input type="text" class="easyui-textbox" id="telephone" name="telephone">
+			<a href="javascript:void(0)" class="easyui-linkbutton"  id="search-message" >查询</a>
+			
+		</div>
+		<table id="datagrid-message" style="width: 100%"></table>
+    </div>
+    
+</div>
+</body>
+<script type="text/javascript">
+
+function smsback(){
+	$("#sendlist").tabs("select","短信发送列表");
+	}
+
+
+
+  //邮件分页 
+$("#datagrid-email").datagrid({
+	url:"market-email/emailInfo",
+	method:"post",
+	toolbar:"#toolbar",
+	fitColumns:true, //自动调整列宽
+	idField:"userId", // 指示服务器传递的数据中，哪个字段是主键
+	rownumbers:true, // 显示行号
+	pagination:true, // 使用分页
+	columns:[[
+		{field:"id",title:"编号"},
+		{field:"sendName",title:"发信人"},
+		{field:"toAddr",title:"收信人"},
+		{field:"subject",title:"标题"},
+		{field:"sendtime",title:"发送时间"},
+		{field:"status",title:"状态",formatter:function(value,rowValue,index){
+			if(value==1){
+				return "已发送";
+			}else {
+				return "未发送";
+			}
+		},width:80},
+		{field:'option',title:'操作',formatter:function(value,rowData,rowIndex){
+			
+            var e = '<a href="market-email/emailDetails?id=' + rowData.id + '&&sendName=' + rowData.sendName + '" style="color: blue">详情</a> ';
+            var d = '<a href="javascript:void(0)" onclick="emailDelete(' + rowData.id + ')"><img src="static/easyui/themes/icons/cancel.png"></a>';
+            return e + d;
+            },width:120}
+	
+	]],
+	loadFilter:function(data){
+		if(data && data.success){
+			return {"total":data.result.total,"rows":data.result.rows};
+		}
+	}
+})	
+//邮件查询
+$("#search-email").on("click", function search(){
+    var sendName = $("#sendName-email").val();
+    var toAddr = $("#toAddr").val();
+  
+    $("#datagrid-email").datagrid("load",{            
+        "sendName":sendName,
+        "toAddr":toAddr
+        
+    })
+})
+
+//邮件删除
+function emailDelete(id){
+	
+	$.messager.confirm('警告','确定要删除吗',function(r){
+	    if (r){
+	    	// 将id传递到后台
+	    	$.ajax({
+	    		url:"market-email/emaildelete",
+	    		data:{"id":id},
+	    		success:function(data){
+	    		
+	    			if(data && data.success){
+	    				$.messager.alert("提示",data.message);
+	    			
+	    			}else{
+	    				$.messager.alert("提示",data.message);
+	    			}
+	    		},
+	    		datatype:"json"
+	    	})
+	    	
+	    }
+	});
+	
+
+}
+
+
+//短信分页查询
+$("#datagrid-message").datagrid({
+	url:"market-sms/messageInfo",
+	method:"post",
+	toolbar:"#toolbar",
+	fitColumns:true, //自动调整列宽
+	idField:"userId", // 指示服务器传递的数据中，哪个字段是主键
+	rownumbers:true, // 显示行号
+	pagination:true, // 使用分页
+	columns:[[
+		{field:"id",title:"编号",width:10},
+		{field:"sendName",title:"发信人",width:10},
+		{field:"telephone",title:"接收人电话",width:20},
+		{field:"content",title:"短信内容",width:50},
+		{field:"sendtime",title:"发送时间",width:30},		
+		{field:'option',title:'操作',formatter:function(value,rowData,rowIndex){
+			var e = '<a href="market-sms/smsDetails?id=' + rowData.id + '&&sendName=' + rowData.sendName + '" style="color: blue">详情</a> ';
+            var d = '<a href="javascript:void(0)" onclick="smsDelete(' + rowData.id + ')"><img src="static/easyui/themes/icons/cancel.png"></a>';
+            return e + d;
+            },width:50}
+	
+	]],
+	loadFilter:function(data){
+		if(data && data.success){
+			return {"total":data.result.total,"rows":data.result.rows};
+		}
+	}
+})	
+//短信查询
+$("#search-message").on("click", function search(){
+    var sendName = $("#sendName-message").val();
+    var telephone = $("#telephone").val();
+  
+    $("#datagrid-message").datagrid("load",{            
+        "sendName":sendName,
+        "telephone":telephone
+        
+    })
+})
+
+//短信删除
+function smsDelete(id){
+
+	$.messager.confirm('警告','确定要删除吗',function(r){
+	    if (r){
+	    	// 将id传递到后台
+	    	$.ajax({
+	    		url:"market-sms/smsdelete",
+	    		data:{"id":id},
+	    		success:function(data){
+	    		
+	    			if(data && data.success){
+	    				$.messager.alert("提示",data.message);
+	    			
+	    			}else{
+	    				$.messager.alert("提示",data.message);
+	    			}
+	    		},
+	    		datatype:"json"
+	    	})
+	    	
+	    }
+	});
+	
+}
+</script>
+</html>

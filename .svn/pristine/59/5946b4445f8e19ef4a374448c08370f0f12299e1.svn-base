@@ -1,0 +1,49 @@
+package com.zhidisoft.system.dao;
+
+import com.zhidisoft.base.IBaseDao;
+import com.zhidisoft.system.entity.Function;
+import com.zhidisoft.system.entity.Role;
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+public interface RoleDao extends IBaseDao<Integer, Role>{
+
+	/**通过用户ID查询角色集合
+	 * @param userId   用户ID
+	 * @return
+	 */
+	List<Role> findRoleList(Integer userId);
+	
+	/**
+	 * @param userId
+	 * @return
+	 */
+	int deleteByUserId(Integer userId);
+	
+	/**
+	 * @param userId
+	 * @param roleId
+	 * @return
+	 */
+	int addUserRole(@Param("userId")Integer userId,@Param("roleId")Integer roleId);
+	
+	/**
+	 * @param roleId
+	 * @return
+	 */
+	int deleteRoleFunctionByRoleId(Integer roleId);
+	
+	/**
+	 * @param roleId
+	 * @param funcId
+	 * @return
+	 */
+	int addRoleFunction(@Param("roleId")Integer roleId,@Param("funcId")Integer funcId);
+	
+	/**
+	 * @param id
+	 * @return
+	 */
+	int deleteByRoleId(Integer id);
+}

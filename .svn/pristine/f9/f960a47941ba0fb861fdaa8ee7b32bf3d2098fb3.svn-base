@@ -1,0 +1,18 @@
+package com.zhidisoft.system.service;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.zhidisoft.base.IBaseService;
+import com.zhidisoft.system.entity.Role;
+
+public interface RolrServiceIf extends IBaseService<Integer, Role>{
+	
+	Map<String,Object> findRoleList(Integer UserId);
+	
+	int deleteByUserId(Integer userId);
+	
+	int addUserRole(Integer userId,String admin,String leader,String business,String web);
+}

@@ -1,0 +1,114 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<base href="<%=basePath%>">
+<%@include file="/script.html" %>
+<html style="overflow-x:auto;overflow-y:auto;">
+<head>
+    <base href="<%=basePath%>">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>数据字典管理</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" /><meta name="author" content="http://jeesite.com/"/>
+    <meta name="renderer" content="webkit"><meta http-equiv="X-UA-Compatible" content="IE=8,IE=9,IE=10" />
+    <meta http-equiv="Expires" content="0"><meta http-equiv="Cache-Control" content="no-cache"><meta http-equiv="Cache-Control" content="no-store">
+    <link href="static/bootstrap/2.3.1/css_cerulean/bootstrap.min.css" type="text/css" rel="stylesheet" />
+    <link href="static/bootstrap/2.3.1/awesome/font-awesome.min.css" type="text/css" rel="stylesheet" />
+    <link href="static/jquery-select2/3.4/select2.min.css" rel="stylesheet" />
+    <link href="static/jquery-validation/1.11.0/jquery.validate.min.css" type="text/css" rel="stylesheet" />
+    <link href="static/jquery-jbox/2.3/Skins/Bootstrap/jbox.min.css" rel="stylesheet" />
+    <link href="static/common/jeesite.css" type="text/css" rel="stylesheet" />
+    <meta name="decorator" content="default">
+    <script type="text/javascript" src="static/js/checkType.js"></script>
+</head>
+<body>
+    <br>
+    <center>
+        <h4>数据字典管理</h4>
+    </center><br>
+    <form id="inputForm" class="form-horizontal" action="#" method="post" novalidate="novalidate">
+        <input id="id" name="id" type="hidden" value="${dict.id}">  
+        <div class="control-group">
+            <label class="control-label">字典名称：</label>
+            <div class="controls">
+                <input id="name" name="name" class="input-xlarge required" type="text" value="${dict.name}" maxlength="50">
+                <span class="help-inline"><font color="red">*</font> </span>
+            </div>
+        </div>      
+        <div class="control-group">
+            <label class="control-label">储存值：</label>
+            <div class="controls">
+                <input id="value" name="value" class="input-xlarge required" type="text" value="${dict.value}" maxlength="50">
+                <span class="help-inline"><font color="red">*</font> </span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">显示值：</label>
+            <div class="controls">
+                <textarea id="label" name="label" class="input-xlarge ">${dict.label}</textarea>
+            </div>
+        </div> 
+        <div class="control-group">
+            <label class="control-label">描述：</label>
+            <div class="controls">
+                <textarea id="description" name=description class="input-xlarge ">${dict.description}</textarea>
+            </div>
+        </div> 
+        <div class="control-group">
+            <label class="control-label">排序号：</label>
+            <div class="controls">
+                <input id="sort" name="sort" class="input-xlarge required" type="text" value="${dict.sort}" maxlength="50">
+                <span class="help-inline"><font color="red">*</font> </span>
+            </div>
+        </div> 
+        
+        <div class="control-group">
+            <label class="control-label">状态：</label>
+            <div class="controls">
+
+                <select id="status"  name="status" style="width:200px;height: 27px">
+                    <c:forEach var="item" items="${DictList}">
+                        <c:if test="${item.name=='del_flag'}">
+                            <c:choose>
+                                <c:when test="${item.value==dict.status}">
+                                  <option value="${item.value}" selected>${item.label}</option>
+                                </c:when>
+                                <c:otherwise>
+                                  <option value="${item.value}">${item.label}</option>
+                                </c:otherwise>
+                            </c:choose>                     
+                        </c:if>
+                    </c:forEach>
+                </select><span class="help-inline"><font color="red">*</font> </span>
+            </div>
+         </div>          
+        <div class="form-actions">
+            <input id="btnSubmit" class="btn btn-primary" type="button" value="保 存">&nbsp;
+            <input id="btnCancel" class="btn" type="button" value="返 回" onclick="closeTopWindow()">
+        </div>
+    </form>
+</body>
+<script type="text/javascript">
+//关闭窗口
+function closeTopWindow(){
+    parent.$("#topWindow").window("close");
+}
+
+//提交修改
+$("#btnSubmit").on("click", function search(event){
+    $.post("dict/updateDict",
+            $("#inputForm").serialize(),
+                function(data){
+                    if (data.success==true) {
+                        closeTopWindow();
+                    }else{
+                        $.messager.alert('Warning',data.message);
+                    }
+                },
+                "json");
+})
+</script>
+</html>

@@ -1,0 +1,23 @@
+package com.zhidisoft.system.service.impl;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.zhidisoft.base.BaseServiceImpl;
+import com.zhidisoft.system.dao.RoleDao;
+import com.zhidisoft.system.entity.Role;
+import com.zhidisoft.system.service.RolrServiceIf;
+
+@Service
+public class RolerServiceImpl extends BaseServiceImpl<Integer, Role> implements RolrServiceIf {
+	
+	@Resource
+	RoleDao roleDao;
+	public List<Role> findRoleList(Integer UserId){
+		List<Role> roleList = roleDao.findRoleList(UserId);
+		return roleList;
+	}
+}

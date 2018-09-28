@@ -1,0 +1,56 @@
+package com.zhidisoft.statistics.controller;
+
+
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+
+import com.zhidisoft.result.JsonResult;
+import com.zhidisoft.result.PageBean;
+import com.zhidisoft.statistics.entity.PersonJob;
+import com.zhidisoft.statistics.service.PersonJobCountService;
+
+@RequestMapping("/statistics")
+@Controller
+public class PersonJobCountController  {
+	@Resource
+	PersonJobCountService sevice;
+	/**
+	 * 人才外包统计分页查询
+	 * @param page
+	 * @param rows
+	 * @param userName
+	 * @param toAddr
+	 * @return
+	 */
+	
+	@RequestMapping("/personjobcountInfo")
+	@ResponseBody
+	public JsonResult personjobcountInfo(Integer page,Integer rows,String customerName,String idcard,String phone,String companyName){
+		
+		PageBean<PersonJob> perPageBean = new PageBean<PersonJob>();
+		perPageBean.setPage(page);
+		perPageBean.setRows(rows);
+		
+		Map<String, Object> condition = new HashMap<String, Object>();
+		condition.put("customerName", customerName);
+		condition.put("idcard", idcard);
+		condition.put("phone", phone);
+		condition.put("companyName", companyName);
+		perPageBean.setCondition(condition);
+		
+		PageBean<PersonJob> pageBean = sevice.findByPage(perPageBean);
+		
+		return JsonResult.buildSuccessResult(pageBean);
+
+	}
+
+
+}

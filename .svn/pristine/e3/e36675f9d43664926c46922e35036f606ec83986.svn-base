@@ -1,0 +1,10 @@
+package com.zhidisoft.system.service;
+
+import com.zhidisoft.base.IBaseService;
+import com.zhidisoft.system.entity.SMSTemplate;
+
+public interface SMSServiceIf extends IBaseService<Integer, SMSTemplate>{
+    SMSTemplate findBySMSId(Integer id);
+
+    int addOrUpdateSMS(SMSTemplate sms);
+}

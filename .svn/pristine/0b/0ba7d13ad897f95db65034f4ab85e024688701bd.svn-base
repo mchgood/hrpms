@@ -1,0 +1,5 @@
+jdbc.mysql.driver=com.mysql.jdbc.Driver
+jdbc.mysql.url=jdbc:mysql://192.168.12.59:3306/jeesite
+jdbc.mysql.username=root
+jdbc.mysql.password=root
+

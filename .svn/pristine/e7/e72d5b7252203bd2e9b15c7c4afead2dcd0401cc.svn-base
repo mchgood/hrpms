@@ -1,0 +1,17 @@
+package com.zhidisoft.marketingmanagement.dao;
+
+import com.zhidisoft.base.IBaseDao;
+import com.zhidisoft.marketingmanagement.entity.SmsTemplate;
+import java.util.List;
+
+public interface SmsTemplateDao extends IBaseDao<Integer, SmsTemplate>{
+    int deleteByPrimaryKey(Integer id);
+
+    int insert(SmsTemplate record);
+
+    SmsTemplate selectByPrimaryKey(Integer id);
+
+    List<SmsTemplate> selectAll();
+
+    int updateByPrimaryKey(SmsTemplate record);
+}

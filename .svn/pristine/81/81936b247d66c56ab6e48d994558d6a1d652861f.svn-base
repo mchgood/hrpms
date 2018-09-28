@@ -1,0 +1,102 @@
+package com.zhidisoft.marketingmanagement.controller;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.validation.Valid;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.zhidisoft.base.BaseController;
+import com.zhidisoft.marketingmanagement.entity.Email;
+import com.zhidisoft.marketingmanagement.entity.Sms;
+import com.zhidisoft.marketingmanagement.service.EmailService;
+import com.zhidisoft.marketingmanagement.service.SmsService;
+import com.zhidisoft.marketingmanagement.service.imp.EmailServiceImp;
+import com.zhidisoft.result.JsonResult;
+import com.zhidisoft.result.PageBean;
+import com.zhidisoft.system.entity.User;
+
+
+@Controller
+@RequestMapping("/market-email")
+public class EmailController extends BaseController{
+	@Resource
+	EmailService emailService;
+	
+	
+	/**
+	 * 邮件分页查询
+	 * @param page
+	 * @param rows
+	 * @param userName
+	 * @param toAddr
+	 * @return
+	 */
+	
+	@RequestMapping("/emailInfo")
+	@ResponseBody
+	public JsonResult emailInfo(Integer page,Integer rows,String sendName,String toAddr){
+		PageBean<Email> emailPageBean = new PageBean<Email>();
+		emailPageBean.setPage(page);
+		emailPageBean.setRows(rows);
+		
+		Map<String, Object> condition = new HashMap<String, Object>();
+		condition.put("sendName", sendName);
+		condition.put("toAddr", toAddr);
+		emailPageBean.setCondition(condition);
+		
+		PageBean<Email> pageBean = emailService.findByPage(emailPageBean);
+		return JsonResult.buildSuccessResult(pageBean);
+
+	}
+	/**
+	 * 跳转邮件修改页面
+	 * @return
+	 */
+	@RequestMapping("/toemailedit")
+	public String toEmailEdit(){
+		return "market/emailedit";
+		
+	}
+	
+	/**
+	 * 删除邮件
+	 */
+	@RequestMapping("/emaildelete")
+	@ResponseBody
+	public JsonResult emailDelete(Integer id){
+		
+		boolean success = emailService.deleteById(id);
+		String message=null;
+		if(success){
+			message="删除成功";
+		}else{
+			message="删除失败";
+		}
+	return JsonResult.buildSuccessResult(message);
+	}
+	
+
+	/**
+	 * 修改邮件
+	 */
+	@RequestMapping("/emailedit")
+	@ResponseBody
+	public JsonResult emailEdit(@Valid Email email,Errors error){
+		System.out.println(email);
+		/*boolean success = emailService.deleteById(id);*/
+		boolean success=true;
+		String message=null;
+		if(success){
+			message="修改成功";
+		}else{
+			message="修改失败";
+		}
+		return JsonResult.buildSuccessResult(message);
+	}
+}

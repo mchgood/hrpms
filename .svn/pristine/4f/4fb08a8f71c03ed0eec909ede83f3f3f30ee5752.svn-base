@@ -1,0 +1,75 @@
+package com.zhidisoft.accumulation_fund.service.impl;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.zhidisoft.accumulation_fund.dao.AccumulationFundDao;
+import com.zhidisoft.accumulation_fund.dao.CustomerDao;
+import com.zhidisoft.accumulation_fund.entity.AccumulationFund;
+import com.zhidisoft.accumulation_fund.entity.Customer;
+import com.zhidisoft.accumulation_fund.service.AccumulationFundServiceIf;
+import com.zhidisoft.base.BaseServiceImpl;
+import com.zhidisoft.result.PageBean;
+
+@Service
+public class AccumulationFundServiceImpl extends BaseServiceImpl<Integer, AccumulationFund> implements AccumulationFundServiceIf{
+
+	@Resource
+	CustomerDao customerDao;
+	
+	@Resource
+	AccumulationFundDao fundDao;
+	
+	@Override
+	public PageBean<AccumulationFund> accumulationFundPageBean(Integer page, Integer rows,String idcard,String accountno) {
+		
+		PageBean<AccumulationFund> pageBean = new PageBean<AccumulationFund>();
+		pageBean.setPage(page);
+		pageBean.setRows(rows);
+		Map<String, Object> condition = new HashMap<String, Object>();
+		condition.put("idcard", idcard);
+		condition.put("accountno", accountno);
+		pageBean.setCondition(condition);
+		return pageBean;
+	}
+
+	/**
+	 * 删除
+	 * */
+	@Override
+	public int deleteByPrimaryKey(Integer id) {
+		
+		return fundDao.deleteByPrimaryKey(id);
+	}
+
+	/**
+	 * 修改
+	 * */
+	@Override
+	public AccumulationFund findById(Integer id) {
+		
+		return fundDao.findById(id);
+	}
+	
+	/**
+	 * 添加
+	 * */
+	@Override
+	public int insert(AccumulationFund accumulationFund) {
+		Customer customer = new Customer();
+		customer.setName(accumulationFund.getName());
+		customer.setIdcard(accumulationFund.getIdcard());
+		int cRows = customerDao.insert(customer);
+		 int fRows = fundDao.insert(accumulationFund);
+		 if(cRows > 0 && fRows > 0) {
+			 return 1;
+		 }else {
+			 return 0;
+		 }
+	}
+}

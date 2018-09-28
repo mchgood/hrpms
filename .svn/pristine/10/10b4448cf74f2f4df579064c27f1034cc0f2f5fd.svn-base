@@ -1,0 +1,134 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%  
+String path = request.getContextPath();  
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";  
+%>
+<!DOCTYPE html >
+<html>
+<head>
+<base href="<%=basePath%>">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+ <%@include file="../../script.html" %>
+</head>
+
+<body>
+<div id="tt" class="easyui-tabs" style="width:100%;height:500px;">
+    <div title="邮件发送列表" style="padding:20px;display:none;">
+	<div id="email">
+			<span>发信人：</span>
+			<input type="text" class="easyui-textbox" id="sendName" name="sendName">			
+		
+			<span>收信人：</span>
+			<input type="text" class="easyui-textbox" id="toAddr" name="toAddr">
+			<a href="javascript:void(0)" class="easyui-linkbutton"  id="search" >查询</a>
+			
+		</div>
+		<table id="datagrid-email"></table>
+	
+	
+    </div>
+    <div title="短信发送列表" data-options="closable:false" style="overflow:auto;padding:20px;display:none;">
+		<div id="message">
+			<span>发信人：</span>
+			<input type="text" class="easyui-textbox" id="sendName" name="sendName">			
+		
+			<span>收信人：</span>
+			<input type="text" class="easyui-textbox" id="telephone" name="telephone">
+			<a href="javascript:void(0)" class="easyui-linkbutton"  id="search-message" >查询</a>
+			
+		</div>
+		<table id="datagrid-message"></table>
+    </div>
+    
+</div>
+</body>
+<script type="text/javascript">
+  //邮件分页 
+$("#datagrid-email").datagrid({
+	url:"market/emailInfo",
+	method:"post",
+	toolbar:"#toolbar",
+	fitColumns:true, //自动调整列宽
+	idField:"userId", // 指示服务器传递的数据中，哪个字段是主键
+	rownumbers:true, // 显示行号
+	pagination:true, // 使用分页
+	columns:[[
+		{field:"id",title:"编号"},
+		{field:"sendName",title:"发信人"},
+		{field:"toAddr",title:"收信人"},
+		{field:"subject",title:"标题"},
+		{field:"sendtime",title:"发送时间"},
+		{field:"status",title:"状态",formatter:function(value,rowValue,index){
+			if(value==1){
+				return "已发送";
+			}else {
+				return "未发送";
+			}
+		},width:80},
+		{field:'option',title:'操作',formatter:function(value,rowData,rowIndex){
+            var e = '<a href="javascript:void(0)" onclick="PorEdit(' + rowData.id + ')"><img src="static/easyui/themes/icons/pencil.png" border="0"></a> ';
+            var d = '<a href="javascript:void(0)" onclick="Delete(' + rowData.id + ')"><img src="static/easyui/themes/icons/cancel.png"></a>';
+            return e + d;
+            },width:120}
+	
+	]],
+	loadFilter:function(data){
+		if(data && data.success){
+			return {"total":data.result.total,"rows":data.result.rows};
+		}
+	}
+})	
+//邮件查询
+$("#search").on("click", function search(){
+    var sendName = $("#sendName").val();
+    var toAddr = $("#toAddr").val();
+  
+    $("#datagrid").datagrid("load",{            
+        "sendName":sendName,
+        "toAddr":toAddr
+        
+    })
+})
+//邮件修改
+function PorEdit(id){
+	window.location.href="market/emailedit";
+}
+//邮件删除
+function Delete(id){
+	alert("删除"+id);
+}
+
+
+
+("#datagrid-message").datagrid({
+	url:"market/messageInfo",
+	method:"post",
+	toolbar:"#toolbar",
+	fitColumns:true, //自动调整列宽
+	idField:"userId", // 指示服务器传递的数据中，哪个字段是主键
+	rownumbers:true, // 显示行号
+	pagination:true, // 使用分页
+	columns:[[
+		{field:"id",title:"编号"},
+		{field:"sendName",title:"发信人"},
+		{field:"telephone",title:"接收人电话"},
+		{field:"content",title:"短信内容"},
+		{field:"sendtime",title:"发送时间"},
+		
+		{field:'option',title:'操作',formatter:function(value,rowData,rowIndex){
+            var e = '<a href="javascript:void(0)" onclick="PorEdit(' + rowData.id + ')"><img src="static/easyui/themes/icons/pencil.png" border="0"></a> ';
+            var d = '<a href="javascript:void(0)" onclick="Delete(' + rowData.id + ')"><img src="static/easyui/themes/icons/cancel.png"></a>';
+            return e + d;
+            },width:120}
+	
+	]],
+	loadFilter:function(data){
+		if(data && data.success){
+			return {"total":data.result.total,"rows":data.result.rows};
+		}
+	}
+})	
+</script>
+</html>

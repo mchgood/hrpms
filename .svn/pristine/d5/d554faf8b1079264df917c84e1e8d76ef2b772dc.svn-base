@@ -1,0 +1,18 @@
+package com.zhidisoft.talent_service.dao;
+
+import com.zhidisoft.base.IBaseDao;
+import com.zhidisoft.talent_service.entity.Person;
+import java.util.List;
+
+public interface PersonDao extends IBaseDao<Integer, Person>{
+    int deleteByPrimaryKey(Integer id);
+
+    int insert(Person record);
+
+    Person selectByPrimaryKey(Integer id);
+
+    List<Person> selectAll();
+
+    int updateByPrimaryKey(Person record);
+    int updateTalent(Person person);
+}

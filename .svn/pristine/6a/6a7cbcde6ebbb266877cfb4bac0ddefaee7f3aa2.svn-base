@@ -1,0 +1,120 @@
+package com.zhidisoft.system.controller;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.zhidisoft.base.BaseController;
+import com.zhidisoft.result.JsonResult;
+import com.zhidisoft.result.PageBean;
+import com.zhidisoft.system.entity.Role;
+import com.zhidisoft.system.entity.User;
+import com.zhidisoft.system.service.RolrServiceIf;
+import com.zhidisoft.system.service.UserServiceIf;
+import com.zhidisoft.system.service.impl.RolerServiceImpl;
+
+/**
+* 系统管理控制器
+* @author tkc  
+* @date 2018年9月15日  
+*/ 
+@SuppressWarnings("all")
+@Controller
+public class SystemManageController extends BaseController{
+	
+	@Resource
+	UserServiceIf userService;
+	@Resource
+	RolrServiceIf rolerService;
+	
+	/**
+	 * 用户信息列表的分页处理
+	 * @param page         页数
+	 * @param rows         每页数目
+	 * @param username     用户名
+	 * @param status       状态
+	 * @param phone        手机号
+	 * @return             分页后的数据
+	 */
+	@RequestMapping("/company/system/userInfo")
+	@ResponseBody
+	public JsonResult userInfo(Integer page,Integer rows,String username,Integer status,String phone) {
+		//创建user的分页对象
+		PageBean<User> userPageBean = new PageBean<User>();
+		userPageBean.setPage(page);
+		userPageBean.setRows(rows);
+		//创建map集合将查询条件添加到PageBean当中
+		Map<String, Object> condition = new HashMap<String, Object>();
+		condition.put("username", username);
+		condition.put("phone", phone);
+		condition.put("status", status);
+		userPageBean.setCondition(condition);
+		//调用分页方法获得分页后的数据
+		PageBean<User> pageBean = userService.findByPage(userPageBean);
+		return JsonResult.buildSuccessResult(pageBean);
+	}
+	
+	/**
+	 * 通过获取的 用户ID查询到用户的信息并且返回到修改用户的界面
+	 * @param id       用户ID
+	 *        
+	 */
+	@RequestMapping("/changeUser")
+	public ModelAndView changeUser(Integer id) {
+	    ModelAndView modelAndView = new ModelAndView();
+	    if(id!=0) {
+	        //通过用户ID获取用户的实体类对象
+	        User user = userService.get(id);
+	        //通过用户ID获取用户的角色集合
+	        Map map = rolerService.findRoleList(user.getId());
+	        map.put("user", user);
+	        
+	        //将信息全部存到ModelAndView中
+	        modelAndView.addObject("map", map);
+	    }
+	    modelAndView.setViewName("sys/changeUser");
+	    return modelAndView;
+	}
+
+	/**
+	 * 用于个人信息添加和修改
+	 * @param user         需要修改或者的user实体类，当添加时候user为null
+	 * @param admin        user的权限，当没有该权限时参数为null
+	 * @param leader       user的权限，当没有该权限时参数为null
+	 * @param business     user的权限，当没有该权限时参数为null
+	 * @param web          user的权限，当没有该权限时参数为null
+	 * 
+	 */
+	@RequestMapping("/sys/updateUser")
+	@ResponseBody
+	public JsonResult updateUser(User user,String admin,String leader,String business,String web) {	    
+	    
+	    int updateByusername = userService.updateByusername(user);
+	    int deleteByUserId = rolerService.deleteByUserId(user.getId());
+	    int addUserRole = rolerService.addUserRole(user.getId(), admin, leader, business, web);
+
+	    if(updateByusername>0 && deleteByUserId>=0 && addUserRole>0) {
+	        return JsonResult.buildSuccessResult();
+	    }else {
+	        return JsonResult.buildFailResult("修改失败");
+	    }
+	}
+	
+	@RequestMapping("/sys/deleteUser")
+    @ResponseBody
+	public JsonResult deleteUser(Integer id) {
+	    int rows = userService.deleteUserById(id);
+	    if(rows>0) {
+	        return JsonResult.buildSuccessResult();
+	    }else {
+	        return JsonResult.buildFailResult("删除失败");
+	    }
+	}
+}

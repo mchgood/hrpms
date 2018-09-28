@@ -1,0 +1,72 @@
+package com.zhidisoft.base;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.zhidisoft.result.PageBean;
+
+/**
+ * 基础业务实现
+ * @author Lu Jianliang
+ *
+ * @param <PK> -实体主键属性类型
+ * @param <E> -实体类型
+ */
+public class BaseServiceImpl<PK,E> implements IBaseService<PK, E>{
+	
+	@Autowired
+	private IBaseDao<PK, E> baseDao;
+
+	@Override
+	public boolean save(E entity) {
+		
+		return baseDao.insert(entity) > 0;
+	}
+
+	@Override
+	public boolean save(List<E> list) {
+		return baseDao.insertBatch(list) > 0;
+	}
+
+	@Override
+	public boolean deleteById(PK id) {
+		return baseDao.deleteByPrimaryKey(id) > 0;
+	}
+
+	@Override
+	public boolean deleteById(List<PK> list) {
+		return baseDao.deleteBatchByPrimaryKey(list) > 0;
+	}
+
+	@Override
+	public boolean update(E entity) {
+		return baseDao.updateByPrimaryKey(entity) > 0;
+	}
+
+	@Override
+	public E get(PK id) {
+		return baseDao.selectByPrimaryKey(id);
+	}
+
+	@Override
+	public List<E> findAll() {
+		return baseDao.selectAll();
+	}
+
+	@Override
+	public PageBean<E> findByPage(PageBean<E> page) {
+		//获取总记录数
+		int total = baseDao.count(page.getCondition());
+		//将总记录数保存到page对象中以便返回
+		page.setTotal(total);
+		//查询分页数据
+		List<E> result = baseDao.findByPage(page.getOffset(), page.getRows(), page.getCondition());
+		
+		page.setResult(result);
+		return page;
+	}
+
+	
+
+}

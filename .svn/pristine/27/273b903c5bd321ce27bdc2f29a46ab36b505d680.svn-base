@@ -1,0 +1,15 @@
+package com.zhidisoft.accumulation_fund.service;
+
+import java.beans.IntrospectionException;
+import java.lang.reflect.InvocationTargetException;
+import java.text.ParseException;
+
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+public interface ExportServiceIf {
+
+  XSSFWorkbook exportExcelInfo()throws InvocationTargetException, 
+	ClassNotFoundException, IntrospectionException, 
+	ParseException, IllegalAccessException ;
+			
+}

@@ -1,0 +1,14 @@
+package com.zhidisoft.accumulation_fund.service;
+
+
+import com.zhidisoft.accumulation_fund.entity.AccumulationFund;
+import com.zhidisoft.base.IBaseService;
+import com.zhidisoft.result.PageBean;
+
+public interface AccumulationFundServiceIf extends IBaseService<Integer,AccumulationFund> {
+	PageBean<AccumulationFund> accumulationFundPageBean(Integer page, Integer rows,String idcard,String accountno);
+	int deleteByPrimaryKey(Integer id);
+	AccumulationFund findById(Integer id);
+	int insert(AccumulationFund accumulationFund);
+	int updateFundUser(AccumulationFund accumulationFund);
+}

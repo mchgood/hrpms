@@ -1,0 +1,119 @@
+package com.zhidisoft.system.controller;
+
+import javax.security.auth.Subject;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.zhidisoft.base.BaseController;
+import com.zhidisoft.system.entity.User;
+
+/**  
+ * index界面用于控制跳转
+* @author tkc  
+* @date 2018年9月15日  
+*/ 
+@Controller
+public class IndexController extends BaseController{
+	/**跳转到登录页面
+	 * 
+	 */
+    @RequestMapping("/tologin")
+	public String toLogin() {
+		return "login";
+	}
+	
+	@RequestMapping("/toIndex")
+    public String toIndex() {
+        return "index";
+    }
+	
+	/**跳转到用户管理页面
+	 * 
+	 */
+	@RequestMapping("/company/system/userInfo")
+	public String touserInfo() {
+		return "sys/userList";
+	}
+
+    /**跳转到角色管理界面
+     * 
+     */
+    @RequestMapping("/company/system/systemRole")
+    public String toroleInfo() {
+        return "sys/roleList";
+    }
+    
+    /**跳转到菜单管理
+     * 
+     */
+    @RequestMapping("company/system/test")
+    public String toFunctionInfo() {
+        return "sys/funcList";
+    }
+
+	/**
+	 * 跳到公积金展示页面
+	 * */
+	@RequestMapping("/company/accumulationFund")
+	public String toAccumulationFund() {
+		return "AccumulationFund/ProvidentFundInquiry";
+	}
+
+	/**
+	 * 跳到公积金展示页面
+	 * */
+	@RequestMapping("/company/accumulationFund/form")
+	public String toAccumulationFundPayment() {
+		return "AccumulationFund/ProvidentFundPayment";
+	}
+	
+	/**
+	 * 跳转到营销查询页面
+	 * @return
+	 */
+	@RequestMapping("/company/emailRecord")
+	public String toEmailRecord(){
+		
+		return "market/sendlist";
+	}
+	/**
+	 * 跳转到邮件营销页面
+	 * @return
+	 */
+	@RequestMapping("/company/emailRecord/form")
+	public String toEmailRecordForm(HttpServletRequest request){
+		
+		User user = (User) SecurityUtils.getSubject().getPrincipal();
+		String username = user.getUsername();
+		request.getSession().setAttribute("userName", username);
+		return "market/sendemail";
+	}
+	/**
+	 * 跳转到短信营销页面
+	 * @return
+	 */
+	@RequestMapping("/company/smsRecord/form")
+	public String toSmsRecordForm(Model model){
+		User user = (User) SecurityUtils.getSubject().getPrincipal();
+		String username = user.getUsername();
+		model.addAttribute("userName",username);
+
+		return "market/sendsms";
+	}
+	
+	/**
+	 * 跳转到公积金催缴页面
+	 * */
+	
+	@RequestMapping("/company/providentfundcall/form")
+	public String toAccumulationFundCall() {
+		return "AccumulationFund/ProvidentFundCall";
+	}
+}

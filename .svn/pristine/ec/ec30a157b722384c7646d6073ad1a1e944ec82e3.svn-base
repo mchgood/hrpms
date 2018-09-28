@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhidisoft.system.dao.DictDao">
+  <resultMap id="BaseResultMap" type="com.zhidisoft.system.entity.Dict">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="value" jdbcType="VARCHAR" property="value" />
+    <result column="label" jdbcType="VARCHAR" property="label" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="parentId" jdbcType="INTEGER" property="parentid" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="createBy" jdbcType="INTEGER" property="createby" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="updateBy" jdbcType="INTEGER" property="updateby" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updatetime" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from tb_system_dict
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.zhidisoft.system.entity.Dict" useGeneratedKeys="true" keyProperty="id">
+    insert into tb_system_dict (id, name, value, 
+      label, description, sort, 
+      parentId, status, createBy, 
+      createTime, updateBy, updateTime
+      )
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{value,jdbcType=VARCHAR}, 
+      #{label,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER}, 
+      #{parentid,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{createby,jdbcType=INTEGER}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{updateby,jdbcType=INTEGER}, #{updatetime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.zhidisoft.system.entity.Dict">
+    update tb_system_dict
+    set name = #{name,jdbcType=VARCHAR},
+      value = #{value,jdbcType=VARCHAR},
+      label = #{label,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      sort = #{sort,jdbcType=INTEGER},
+      status = #{status,jdbcType=VARCHAR},
+      updateTime = #{updatetime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, name, value, label, description, sort, parentId, status, createBy, createTime, 
+    updateBy, updateTime
+    from tb_system_dict
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, name, value, label, description, sort, parentId, status, createBy, createTime, 
+    updateBy, updateTime
+    from tb_system_dict
+  </select>
+  
+  <!-- 分页开始 -->
+    <sql id="pageComm">
+      <where>
+            <if test="condition != null">
+                 <if test="condition.name!=null and condition.name!=''">
+                    and name like concat("%",#{condition.name},"%")
+                 </if>
+                 <if test="condition.status!=null">
+                    and status =#{condition.status} 
+                 </if>
+            </if>
+        </where>
+    </sql>
+    
+  <select id="findByPage" parameterType="Map" resultMap="BaseResultMap">
+    select * from (select id, name, value, label, description, sort, parentId, status, createBy, createTime, 
+    updateBy, updateTime
+    from tb_system_dict
+   <include refid="pageComm"/> ORDER BY sort DESC) as total
+    LIMIT #{offset},#{pageSize}
+  </select>
+  
+  <select id="count" parameterType="Map" resultType="java.lang.Integer">
+    select count(id)
+    from tb_system_dict
+    <include refid="pageComm"/>
+  </select>
+  <!-- 分页结束 -->
+</mapper>

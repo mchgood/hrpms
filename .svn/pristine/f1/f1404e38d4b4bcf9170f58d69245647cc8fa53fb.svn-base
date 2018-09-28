@@ -1,0 +1,10 @@
+package com.zhidisoft.accumulation_fund.dao;
+
+import com.zhidisoft.accumulation_fund.entity.AccumulationFund;
+import com.zhidisoft.base.IBaseDao;
+
+
+public interface AccumulationFundDao  extends IBaseDao<Integer, AccumulationFund>{
+  
+
+}

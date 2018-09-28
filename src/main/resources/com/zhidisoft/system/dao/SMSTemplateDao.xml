@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhidisoft.system.dao.SMSTemplateDao">
+  <resultMap id="BaseResultMap" type="com.zhidisoft.system.entity.SMSTemplate">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="template_code" jdbcType="VARCHAR" property="templateCode" />
+    <result column="subject" jdbcType="VARCHAR" property="subject" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="order_id" jdbcType="INTEGER" property="orderId" />
+    <result column="createBy" jdbcType="INTEGER" property="createby" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="updateBy" jdbcType="INTEGER" property="updateby" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updatetime" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from tb_sms_template
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.zhidisoft.system.entity.SMSTemplate" useGeneratedKeys="true" keyProperty="id">
+    insert into tb_sms_template (id, template_code, subject, 
+      content, order_id, createBy, 
+      createTime, updateBy, updateTime
+      )
+    values (#{id,jdbcType=INTEGER}, #{templateCode,jdbcType=VARCHAR}, #{subject,jdbcType=VARCHAR}, 
+      #{content,jdbcType=VARCHAR}, #{orderId,jdbcType=INTEGER}, #{createby,jdbcType=INTEGER}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{updateby,jdbcType=INTEGER}, #{updatetime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.zhidisoft.system.entity.SMSTemplate">
+    update tb_sms_template
+    set template_code = #{templateCode,jdbcType=VARCHAR},
+      subject = #{subject,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      order_id = #{orderId,jdbcType=INTEGER},
+      createBy = #{createby,jdbcType=INTEGER},
+      updateBy = #{updateby,jdbcType=INTEGER},
+      updateTime = #{updatetime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, template_code, subject, content, order_id, createBy, createTime, updateBy, 
+    updateTime
+    from tb_sms_template
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, template_code, subject, content, order_id, createBy, createTime, updateBy, 
+    updateTime
+    from tb_sms_template
+  </select>
+  
+  <!-- 分页开始 -->
+    <sql id="pageComm">
+      <where>
+            <if test="condition != null">
+                 <if test="condition.subject!=null and condition.subject!=''">
+                    and subject like concat("%",#{condition.subject},"%")
+                </if>
+                
+                <if test="condition.templateCode>0">
+                    and template_code = #{condition.templateCode}
+                </if>
+            </if>
+        </where>
+    </sql>
+    
+  <select id="findByPage" parameterType="Map" resultMap="BaseResultMap">
+    select * from (select id, template_code, subject, content, order_id, createBy, createTime, updateBy, 
+    updateTime
+    from tb_sms_template
+   <include refid="pageComm"/> ORDER BY order_id DESC) as total LIMIT #{offset},#{pageSize}
+  </select>
+  
+  <select id="count" parameterType="Map" resultType="java.lang.Integer">
+    select count(id)
+    from tb_sms_template
+    <include refid="pageComm"/>
+  </select>
+  <!-- 分页结束 -->
+  
+</mapper>

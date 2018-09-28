@@ -1,0 +1,17 @@
+package com.zhidisoft.talent_service.dao;
+
+import com.zhidisoft.talent_service.entity.Person_Job;
+
+import java.util.List;
+
+public interface Person_JobDao {
+    int deleteByPrimaryKey(Integer id);
+
+    int insert(Person_Job record);
+
+    Person_Job selectByPrimaryKey(Integer id);
+
+    List<Person_Job> selectAll();
+
+    int updateByPrimaryKey(Person_Job record);
+}
